@@ -5,6 +5,20 @@ FROM python:3.9
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
+# Install necessary system packages
+RUN apt-get update && apt-get install -y \
+    python3 \
+    python3-pip \
+    python3-venv \
+    python3-dev \
+    build-essential \
+    libxml2-dev \
+    libxslt1-dev \
+    libffi-dev \
+    libpq-dev \
+    libssl-dev \
+    zlib1g-dev
+
 # Create a directory for the app
 RUN mkdir -p /opt/status-page
 WORKDIR /opt/status-page
