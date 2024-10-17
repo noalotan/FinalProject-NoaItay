@@ -4,20 +4,14 @@ variable "region" {
   default     = "us-east-1"
 }
 
-variable "cluster_name" {
-  description = "EKS Cluster Name"
+variable "resource_name" {
+  description = "General resource name"
   type        = string
-  default     = "eks-noa-itay-status-page"
-}
-
-variable "vpc_name" {
-  description = "AWS VPC Name"
-  type        = string
-  default     = "vpc-noa-itay-status-page"
+  default     = "noa-itay"
 }
 
 variable "billing_tags" {
-  description = "Billing tags to apply to resources"
+  description = "Tags for billing"
   type        = map(string)
   default     = {
     Project = "TeamA"
