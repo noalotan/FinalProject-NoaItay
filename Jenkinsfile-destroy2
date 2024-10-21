@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage('Setup AWS Credentials') {
             steps {
-                withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'aws credentials']]) {
+                withCredentials([aws(credentialsId: 'aws credentials')]) {
                     script {
                         env.AWS_ACCESS_KEY_ID = "${AWS_ACCESS_KEY_ID}"
                         env.AWS_SECRET_ACCESS_KEY = "${AWS_SECRET_ACCESS_KEY}"
@@ -24,15 +24,16 @@ pipeline {
         stage('Terraform Plan') {
             steps {
                 dir('eks-terraform') {
-                    sh 'terraform plan -out=tfplan'
+                    sh 'terraform plan -destroy -out=tfplan'
                 }
             }
         }
 
-        stage('Terraform Destroy') {
+        stage('Terraform Apply') {
             steps {
                 dir('eks-terraform') {
-                    sh 'terraform destroy -auto-approve'
+                    input message: 'Are you sure you want to destroy the resources?', ok: 'Yes, destroy!'
+                    sh 'terraform apply tfplan'
                 }
             }
         }
@@ -43,10 +44,10 @@ pipeline {
             echo 'Cleaning up'
         }
         success {
-            echo 'Terraform operations succeeded!'
+            echo 'Terraform destroy succeeded!'
         }
         failure {
-            echo 'Terraform operations failed.'
+            echo 'Terraform destroy failed.'
         }
     }
 }
