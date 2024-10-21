@@ -15,24 +15,16 @@ pipeline {
 
         stage('Terraform Init') {
             steps {
-                dir('eks-terraform') {
+                dir('/var/lib/jenkins/workspace/itay-noa/eks-terraform') {
                     sh 'terraform init'
                 }
             }
         }
 
-        stage('Terraform Plan') {
+        stage('Terraform Destroy') {
             steps {
-                dir('eks-terraform') {
-                    sh 'terraform plan -destroy -out=tfplan'
-                }
-            }
-        }
-
-        stage('Terraform Apply') {
-            steps {
-                dir('eks-terraform') {
-                    sh 'terraform apply -auto-approve tfplan'
+                dir('/var/lib/jenkins/workspace/itay-noa/eks-terraform') {
+                    sh 'terraform destroy -auto-approve'
                 }
             }
         }
