@@ -2,15 +2,6 @@ pipeline {
     agent any
 
     stages {
-        stage('Checkout') {
-            steps {
-                git branch: 'noa', url: 'https://github.com/noalotan/FinalProject-NoaItay.git'
-                dir('eks-terraform') {
-                    echo 'Checked out the code'
-                }
-            }
-        }
-
         stage('Terraform Init') {
             steps {
                 dir('eks-terraform') {
