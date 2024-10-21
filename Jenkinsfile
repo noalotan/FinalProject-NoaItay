@@ -13,12 +13,6 @@ pipeline {
             }
         }
 
-        stage('Checkout') {
-            steps {
-                git branch: 'noa', url: 'https://github.com/noalotan/FinalProject-NoaItay.git'
-            }
-        }
-
         stage('Terraform Init') {
             steps {
                 dir('eks-terraform') {
