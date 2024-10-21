@@ -13,6 +13,22 @@ pipeline {
             }
         }
 
+        stage('Terraform Init') {
+            steps {
+                dir('eks-terraform') {
+                    sh 'terraform init'
+                }
+            }
+        }
+
+        stage('Terraform Plan') {
+            steps {
+                dir('eks-terraform') {
+                    sh 'terraform plan -out=tfplan'
+                }
+            }
+        }
+
         stage('Terraform Destroy') {
             steps {
                 dir('eks-terraform') {
@@ -27,10 +43,10 @@ pipeline {
             echo 'Cleaning up'
         }
         success {
-            echo 'Terraform destroy succeeded!'
+            echo 'Terraform operations succeeded!'
         }
         failure {
-            echo 'Terraform destroy failed.'
+            echo 'Terraform operations failed.'
         }
     }
 }
