@@ -2,6 +2,23 @@ pipeline {
     agent any
 
     stages {
+        stage('Setup AWS Credentials') {
+            steps {
+                withCredentials([aws(credentialsId: 'aws-credentials')]) {
+                    script {
+                        env.AWS_ACCESS_KEY_ID = "${AWS_ACCESS_KEY_ID}"
+                        env.AWS_SECRET_ACCESS_KEY = "${AWS_SECRET_ACCESS_KEY}"
+                    }
+                }
+            }
+        }
+
+        stage('Checkout') {
+            steps {
+                git branch: 'noa', url: 'https://github.com/noalotan/FinalProject-NoaItay.git'
+            }
+        }
+
         stage('Terraform Init') {
             steps {
                 dir('eks-terraform') {
