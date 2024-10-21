@@ -1,7 +1,14 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: status-page
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: django
+  namespace: status-page
 spec:
   replicas: 2
   selector:
