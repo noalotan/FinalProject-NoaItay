@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage('Setup AWS Credentials') {
             steps {
-                withCredentials([aws(credentialsId: 'aws-credentials')]) {
+                withCredentials([aws(credentialsId: 'aws credentials')]) {
                     script {
                         env.AWS_ACCESS_KEY_ID = "${AWS_ACCESS_KEY_ID}"
                         env.AWS_SECRET_ACCESS_KEY = "${AWS_SECRET_ACCESS_KEY}"
