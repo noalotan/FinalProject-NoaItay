@@ -3,13 +3,16 @@ resource "aws_elasticache_subnet_group" "redis_subnet_group" {
   subnet_ids = module.vpc.private_subnets
 }
 
-resource "aws_elasticache_cluster" "redis" {
-  cluster_id           = var.redis_cluster_id
-  engine               = "redis"
-  node_type            = "cache.t2.micro"
-  num_cache_nodes      = 1
-  parameter_group_name = "default.redis7"
-  subnet_group_name    = aws_elasticache_subnet_group.redis_subnet_group.name
-  security_group_ids   = [aws_security_group.elasticache_sg.id]
-  tags                 = local.billing_tags
+resource "aws_elasticache_replication_group" "redis" {
+  replication_group_id          = var.redis_replication_group_id
+  replication_group_description = "Redis replication group"
+  node_type                     = "cache.t2.micro"
+  number_cache_clusters         = 1  
+  parameter_group_name          = "default.redis7"
+  subnet_group_name             = aws_elasticache_subnet_group.redis_subnet_group.name
+  security_group_ids            = [aws_security_group.elasticache_sg.id]
+  automatic_failover_enabled    = false
+  engine                        = "redis"
+  engine_version                = "7.x"
+  tags                          = local.billing_tags
 }
