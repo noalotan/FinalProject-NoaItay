@@ -24,7 +24,6 @@ module "eks" {
       min_size     = 1
       max_size     = 3
       desired_size = 2
-      security_groups  = [aws_security_group.eks_nodes.id]
       tags = local.billing_tags
     }
 
@@ -36,7 +35,6 @@ module "eks" {
       min_size     = 1
       max_size     = 2
       desired_size = 1
-      security_groups  = [aws_security_group.eks_nodes.id]
       tags = local.billing_tags
     }
   }
