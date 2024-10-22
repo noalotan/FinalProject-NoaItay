@@ -22,13 +22,3 @@ output "eks_cluster_endpoint" {
   description = "The endpoint of the EKS cluster"
   value       = module.eks.cluster_endpoint
 }
-
-output "eks_security_group_id" {
-  description = "The security group ID for EKS nodes"
-  value       = aws_security_group.eks_nodes.id
-}
-
-# output "nat_gateway_id" {
-#  description = "The ID of the NAT Gateway (if enabled)"
-#  value       = module.vpc.enable_nat_gateway ? module.vpc.nat_gateway_id : null
-#}
