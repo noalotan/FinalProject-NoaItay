@@ -14,6 +14,6 @@ resource "aws_elasticache_replication_group" "redis" {
   security_group_ids            = [aws_security_group.elasticache_sg.id]
   automatic_failover_enabled    = false
   engine                        = "redis"
-  engine_version                = "7.x"
+  engine_version                = "7.1"
   tags                          = local.billing_tags
 }
