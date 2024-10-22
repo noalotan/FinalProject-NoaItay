@@ -52,7 +52,7 @@ variable "db_subnet_group_name" {
 
 # redis vars
 
-variable "redis_cluster_id" {
+variable "redis_replication_group_id" {
   description = "The ID of the ElastiCache Redis cluster"
   default     = "noa-itay-redis-cache"
 }
