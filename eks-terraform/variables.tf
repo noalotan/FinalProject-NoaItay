@@ -33,7 +33,7 @@ variable "db_name" {
 
 variable "db_user" {
   description = "The database admin user name"
-  default     = "itayandnoa"
+  default     = "statuspage"
 }
 
 variable "db_password" {
