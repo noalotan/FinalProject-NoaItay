@@ -5,9 +5,9 @@ resource "aws_elasticache_subnet_group" "redis_subnet_group" {
 
 resource "aws_elasticache_replication_group" "redis" {
   replication_group_id          = var.redis_replication_group_id
-  replication_group_description = "Redis replication group"
+  description                   = "Redis replication group"
   node_type                     = "cache.t2.micro"
-  number_cache_clusters         = 1  
+  number_cache_nodes            = 1  
   parameter_group_name          = "default.redis7"
   subnet_group_name             = aws_elasticache_subnet_group.redis_subnet_group.name
   security_group_ids            = [aws_security_group.elasticache_sg.id]
