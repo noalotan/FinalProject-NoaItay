@@ -1,6 +1,6 @@
 resource "aws_elasticache_subnet_group" "redis_subnet_group" {
   name       = var.redis_subnet_group_name
-  subnet_ids = module.vpc.private_subnets
+  subnet_ids = data.terraform_remote_state.static.outputs.private_subnets
 }
 
 resource "aws_elasticache_replication_group" "redis" {
