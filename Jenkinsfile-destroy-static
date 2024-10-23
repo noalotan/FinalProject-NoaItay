@@ -30,7 +30,7 @@ pipeline {
         }
         stage('Cleaning up') {
             steps {
-                sh 'rm -rf /var/lib/jenkins/workspace/static-apply/static /var/lib/jenkins/workspace/terraform-static-workspace'
+                sh 'rm -rf /var/lib/jenkins/workspace/static-apply/static /var/lib/jenkins/workspace/static-apply/static@tmp /var/lib/jenkins/workspace/terraform-static-workspace'
             }
         }
     }    
