@@ -41,7 +41,7 @@ pipeline {
     post {
         always {
             echo 'Copying data to shared Diractory'
-            cp ${env.WORKSPACE}/dynamic /var/lib/jenkins/workspace/terraform-workspace
+            sh 'cp ${env.WORKSPACE}/dynamic /var/lib/jenkins/workspace/terraform-workspace'
         }
         success {
             echo 'Terraform apply succeeded!'
