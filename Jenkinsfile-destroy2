@@ -15,7 +15,7 @@ pipeline {
 
         stage('Terraform Init') {
             steps {
-                dir('/var/lib/jenkins/workspace/terraform-apply/eks-terraform') {
+                dir('/var/lib/jenkins/workspace/dynamic-apply/dynamic') {
                     sh 'terraform init'
                 }
             }
@@ -23,12 +23,17 @@ pipeline {
 
         stage('Terraform Destroy') {
             steps {
-                dir('/var/lib/jenkins/workspace/terraform-apply/eks-terraform') {
+                dir('/var/lib/jenkins/workspace/dynamic-apply/dynamic') {
                     sh 'terraform destroy -auto-approve'
                 }
             }
         }
-    }
+        stage('Cleaning up') {
+            steps {
+                sh 'rm -rf /var/lib/jenkins/workspace/dynamic-apply/dynamic'
+            }
+        }
+    }    
 
     post {
         always {
