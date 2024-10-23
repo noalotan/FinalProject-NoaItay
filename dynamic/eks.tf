@@ -9,7 +9,7 @@ module "eks" {
   enable_cluster_creator_admin_permissions = true
 
   vpc_id     = data.terraform_remote_state.static.outputs.vpc_id
-  subnet_ids = module.vpc.private_subnets
+  subnet_ids = data.terraform_remote_state.static.outputs.private_subnets
 
   eks_managed_node_group_defaults = {
     ami_type = "AL2_x86_64"
