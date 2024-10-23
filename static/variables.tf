@@ -19,7 +19,11 @@ variable "billing_tags" {
     Project = "TeamA"
   }
 }
-
+variable "vpc_id" {
+  description = "The ID of the VPC"
+  type        = string
+  default     = "vpc-0d5cc8a37d7f450f2"
+}
 
 # postgresql db vars
 
