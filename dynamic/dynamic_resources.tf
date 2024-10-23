@@ -10,6 +10,8 @@ data "terraform_remote_state" "static" {
 
 resource "aws_some_resource" "example" {
   vpc_id = data.terraform_remote_state.static.outputs.vpc_id
+  public_subnets = data.terraform_remote_state.static.outputs.public_subnets
+  private_subnets = data.terraform_remote_state.static.outputs.private_subnets
 }
 
 
