@@ -40,7 +40,8 @@ pipeline {
 
     post {
         always {
-            echo 'Cleaning up'
+            echo 'Copying data to shared Diractory'
+            cp ${env.WORKSPACE}/dynamic /var/lib/jenkins/workspace/terraform-workspace
         }
         success {
             echo 'Terraform apply succeeded!'
