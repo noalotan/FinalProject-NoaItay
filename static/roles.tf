@@ -53,11 +53,3 @@ resource "aws_iam_policy_attachment" "eks_cni_policy" {
   roles      = [aws_iam_role.eks_node_role.name]
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
 }
-
-output "eks_cluster_role_arn" {
-  value = aws_iam_role.eks_cluster_role.arn
-}
-
-output "eks_node_role_arn" {
-  value = aws_iam_role.eks_node_role.arn
-}
