@@ -24,6 +24,13 @@ variable "vpc_id" {
   type        = string
   default     = "vpc-0d5cc8a37d7f450f2"
 }
+variable "private_subnets" {
+  description = "List of Private subnets"
+  type        = list
+  default     = "subnet-0996935fad4064213, subnet-0f6a890766d8d5ef1"
+}
+
+
 
 # postgresql db vars
 
