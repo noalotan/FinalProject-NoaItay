@@ -30,7 +30,7 @@ pipeline {
         }
         stage('Cleaning up') {
             steps {
-                sh 'rm -rf /var/lib/jenkins/workspace/dynamic-apply/dynamic'
+                sh 'rm -rf /var/lib/jenkins/workspace/dynamic-apply/dynamic /var/lib/jenkins/workspace/terraform-dynamic-workspace'
             }
         }
     }    
