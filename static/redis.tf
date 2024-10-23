@@ -11,7 +11,7 @@ resource "aws_elasticache_replication_group" "redis" {
   replicas_per_node_group       = 0
   parameter_group_name          = "default.redis7"
   subnet_group_name             = aws_elasticache_subnet_group.redis_subnet_group.name
-  security_group_ids            = [data.terraform_remote_state.static.outputs.elasticache_security_group_id]
+  security_group_ids            = [aws_security_group.elasticache_sg.id]
   automatic_failover_enabled    = false
   engine                        = "redis"
   engine_version                = "7.1"
