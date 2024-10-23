@@ -15,7 +15,7 @@ pipeline {
 
         stage('Terraform Init') {
             steps {
-                dir('eks-terraform') {
+                dir('static') {
                     sh 'terraform init'
                 }
             }
@@ -23,7 +23,7 @@ pipeline {
 
         stage('Terraform Plan') {
             steps {
-                dir('eks-terraform') {
+                dir('static') {
                     sh 'terraform plan'
                 }
             }
@@ -31,18 +31,19 @@ pipeline {
 
         stage('Terraform Apply') {
             steps {
-                dir('eks-terraform') {
+                dir('static') {
                     sh 'terraform apply -auto-approve'
                 }
             }
         }
-    }
+        stage('Copying Data') {
+            steps {
+                sh 'cp /var/lib/jenkins/workspace/static-apply/static /var/lib/jenkins/workspace/terraform-static-workspace'
+            }
+        }
+}
 
     post {
-        always {
-            echo 'Copying data to shared Diractory'
-            sh 'cp ${env.WORKSPACE}/static /var/lib/jenkins/workspace/terraform-static-workspace'
-        }
         success {
             echo 'Terraform apply succeeded!'
         }
