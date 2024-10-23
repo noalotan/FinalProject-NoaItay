@@ -1,7 +1,7 @@
 resource "aws_security_group" "elasticache_sg" {
   name        = "elasticache-sg-${local.resource_name}"
   description = "Security group for ElastiCache"
-  vpc_id      = module.vpc.vpc_id
+  vpc_id      = local.vpc_id
 
   ingress {
     from_port   = 6379
