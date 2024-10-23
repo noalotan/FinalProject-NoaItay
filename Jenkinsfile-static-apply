@@ -38,7 +38,7 @@ pipeline {
         }
         stage('Copying Data') {
             steps {
-                sh 'cp /var/lib/jenkins/workspace/static-apply/static /var/lib/jenkins/workspace/terraform-static-workspace'
+                sh 'cp -r /var/lib/jenkins/workspace/static-apply/static /var/lib/jenkins/workspace/terraform-static-workspace'
             }
         }
         stage('Prepering Destroy Diractory') {
