@@ -30,3 +30,27 @@ output "eks_node_role_arn" {
   description = "The ARN of the EKS node IAM role"
   value       = aws_iam_role.eks_node_role.arn
 }
+
+
+# db outputs
+
+output "db_subnet_group_name" {
+  description = "The name of the DB subnet group"
+  value       = aws_db_subnet_group.mydb_subnet_group.name
+}
+
+output "db_instance_identifier" {
+  description = "The identifier of the DB instance"
+  value       = aws_db_instance.mydb.identifier
+}
+
+output "db_instance_endpoint" {
+  description = "The endpoint address of the DB instance"
+  value       = aws_db_instance.mydb.address
+}
+
+output "db_instance_arn" {
+  description = "The ARN of the DB instance"
+  value       = aws_db_instance.mydb.arn
+}
+
