@@ -19,16 +19,3 @@ variable "billing_tags" {
     Project = "TeamA"
   }
 }
-
-
-# redis vars
-
-variable "redis_replication_group_id" {
-  description = "The ID of the ElastiCache Redis cluster"
-  default     = "noa-itay-redis-cache"
-}
-
-variable "redis_subnet_group_name" {
-  description = "The name of the ElastiCache subnet group"
-  default     = "noa-itay-redis-subnet-group"
-}
