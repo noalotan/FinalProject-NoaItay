@@ -15,7 +15,7 @@ pipeline {
 
         stage('Terraform Init') {
             steps {
-                dir('eks-terraform') {
+                dir('dynamic') {
                     sh 'terraform init'
                 }
             }
@@ -23,7 +23,7 @@ pipeline {
 
         stage('Terraform Plan') {
             steps {
-                dir('eks-terraform') {
+                dir('dynamic') {
                     sh 'terraform plan'
                 }
             }
@@ -31,7 +31,7 @@ pipeline {
 
         stage('Terraform Apply') {
             steps {
-                dir('eks-terraform') {
+                dir('dynamic') {
                     sh 'terraform apply -auto-approve'
                 }
             }
@@ -41,7 +41,7 @@ pipeline {
     post {
         always {
             echo 'Copying data to shared Diractory'
-            sh 'cp ${env.WORKSPACE}/dynamic /var/lib/jenkins/workspace/terraform-workspace'
+            sh 'cp ${env.WORKSPACE}/dynamic /var/lib/jenkins/workspace/terraform-dynamic-workspace'
         }
         success {
             echo 'Terraform apply succeeded!'
