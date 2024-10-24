@@ -10,7 +10,7 @@ module "eks" {
   vpc_id     = var.vpc_id
   subnet_ids = var.private_subnets
 
-  cluster_iam_role_name = "status-page-itay-noa"
+  iam_role_arn = "arn:aws:iam::992382545251:role/status-page-itay-noa"  # Updated line
 
   eks_managed_node_group_defaults = {
     ami_type    = "AL2_x86_64"
@@ -37,21 +37,4 @@ module "eks" {
   }
 
   tags = local.billing_tags
-}
-
-#Add ons:
-
-resource "aws_eks_addon" "kube_proxy" {
-  cluster_name = module.eks.cluster_id
-  addon_name   = "kube-proxy"
-}
-
-resource "aws_eks_addon" "vpc_cni" {
-  cluster_name = module.eks.cluster_id
-  addon_name   = "vpc-cni"
-}
-
-resource "aws_eks_addon" "coredns" {
-  cluster_name = module.eks.cluster_id
-  addon_name   = "coredns"
 }
