@@ -13,17 +13,7 @@ output "private_subnets" {
   value       = module.vpc.private_subnets
 }
 
-output "nat_gateway_id" {
-  description = "The ID of the NAT Gateway"
-  value       = module.vpc.nat_gateway_id
-}
-
 output "availability_zones" {
   description = "List of availability zones"
   value       = module.vpc.azs
-}
-
-output "vpc_cidr" {
-  description = "CIDR block of the VPC"
-  value       = module.vpc.cidr
 }
