@@ -22,12 +22,18 @@ variable "billing_tags" {
 variable "vpc_id" {
   description = "The ID of the VPC"
   type        = string
-  default     = "vpc-0d5cc8a37d7f450f2"
+  default     = "vpc-01069a335615ca3e2"
 }
+
+
 variable "private_subnets" {
   description = "List of Private subnets"
   type        = list(string)
-  default     = ["subnet-0996935fad4064213", "subnet-0f6a890766d8d5ef1"]
+  default     = [
+  "subnet-0f9be926b8c4a4e7c",
+  "subnet-006819ee8aabc9934",
+  "subnet-0aa5bd8a45cffc131",
+]
 }
 
 
