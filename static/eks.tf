@@ -4,44 +4,42 @@ module "eks" {
 
   cluster_name    = "cluster-${local.resource_name}"
   cluster_version = "1.30"
-
   cluster_endpoint_public_access           = true
   enable_cluster_creator_admin_permissions = true
 
   vpc_id     = var.vpc_id
   subnet_ids = var.private_subnets
 
+  cluster_iam_role_name = "status-page-itay-noa"
+
   eks_managed_node_group_defaults = {
-    ami_type = "AL2_x86_64"
+    ami_type    = "AL2_x86_64"
+    iam_role_arn = "arn:aws:iam::992382545251:role/status-page-node-itay-noa"
   }
 
   eks_managed_node_groups = {
     one = {
-      name = "ng-1-${local.resource_name}"
-
-      instance_types = ["t2.micro"]
-
-      min_size     = 1
-      max_size     = 3
-      desired_size = 2
-      tags = local.billing_tags
+      name            = "ng-1-${local.resource_name}"
+      instance_types  = ["t2.micro"]
+      min_size        = 1
+      max_size        = 3
+      desired_size    = 2
+      tags            = local.billing_tags
     }
-
     two = {
-      name = "ng-2-${local.resource_name}"
-
-      instance_types = ["t2.micro"]
-
-      min_size     = 1
-      max_size     = 2
-      desired_size = 1
-      tags = local.billing_tags
+      name            = "ng-2-${local.resource_name}"
+      instance_types  = ["t2.micro"]
+      min_size        = 1
+      max_size        = 2
+      desired_size    = 1
+      tags            = local.billing_tags
     }
   }
+
   tags = local.billing_tags
 }
 
-# Add-ons for EKS cluster
+#Add ons:
 
 resource "aws_eks_addon" "kube_proxy" {
   cluster_name = module.eks.cluster_id
