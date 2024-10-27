@@ -37,7 +37,7 @@ module "eks" {
     }
   }
 
- cluster_security_group_id = [aws_security_group.eks_sg.id]
+ cluster_security_group_id = aws_security_group.eks_sg.id
 
   tags = local.billing_tags
 }
