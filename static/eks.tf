@@ -8,7 +8,7 @@ module "eks" {
   enable_cluster_creator_admin_permissions = true
 
   vpc_id     = var.vpc_id
-  subnet_ids = var.public_subnets
+  subnet_ids = var.private_subnets
 
   iam_role_arn = "arn:aws:iam::992382545251:role/status-page-itay-noa"  # Updated line
 
@@ -52,7 +52,7 @@ resource "aws_eks_addon" "kube_proxy" {
 resource "aws_eks_addon" "vpc_cni" {
   cluster_name              = module.eks.cluster_name
   addon_name                = "vpc-cni"
-  addon_version             = "v1.18.5-eksbuild.1"
+  addon_version = "v1.10.0-eksbuild.1"
   service_account_role_arn  = "arn:aws:iam::992382545251:role/noa-itay-eks-vpc-cni"
   resolve_conflicts         = "OVERWRITE"
 }
