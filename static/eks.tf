@@ -23,15 +23,15 @@ module "eks" {
       name            = "ng-1-${local.resource_name}"
       instance_types  = ["t2.large"]
       min_size        = 1
-      max_size        = 3
-      desired_size    = 2
+      max_size        = 5
+      desired_size    = 1
       tags            = local.billing_tags
     }
     two = {
       name            = "ng-2-${local.resource_name}"
       instance_types  = ["t2.large"]
       min_size        = 1
-      max_size        = 2
+      max_size        = 5
       desired_size    = 1
       tags            = local.billing_tags
     }
