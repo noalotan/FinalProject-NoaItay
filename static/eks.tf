@@ -37,10 +37,7 @@ module "eks" {
     }
   }
 
-  # Specify the security group for the EKS cluster
-  vpc_config = {
-    security_group_ids = [aws_security_group.eks_sg.id]
-  }
+ cluster_security_group_id = [aws_security_group.eks_sg.id]
 
   tags = local.billing_tags
 }
