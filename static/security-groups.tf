@@ -41,3 +41,25 @@ resource "aws_security_group" "rds_sg" {
 
   tags = local.billing_tags
 }
+
+resource "aws_security_group" "eks_sg" {
+  name        = "eks-sg-${local.resource_name}"
+  description = "Security group for EKS cluster"
+  vpc_id      = local.vpc_id
+
+  ingress {
+    from_port   = 0
+    to_port     = 65535
+    protocol    = "-1"  # Allows all protocols
+    cidr_blocks = ["0.0.0.0/0"]  # Adjust to your needs
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"  # Allows all protocols
+    cidr_blocks = ["0.0.0.0/0"]  # Adjust to your needs
+  }
+
+  tags = local.billing_tags
+}
