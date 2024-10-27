@@ -52,7 +52,7 @@ resource "aws_eks_addon" "kube_proxy" {
 resource "aws_eks_addon" "vpc_cni" {
   cluster_name              = module.eks.cluster_name
   addon_name                = "vpc-cni"
-  addon_version             = "1.18.5-eksbuild.1"
+  addon_version             = "v1.18.5-eksbuild.1"
   service_account_role_arn  = "arn:aws:iam::992382545251:role/noa-itay-eks-vpc-cni"
 }
 
