@@ -21,7 +21,7 @@ module "eks" {
   eks_managed_node_groups = {
     one = {
       name            = "ng-1-${local.resource_name}"
-      instance_types  = ["t2.micro"]
+      instance_types  = ["t2.large"]
       min_size        = 1
       max_size        = 3
       desired_size    = 2
@@ -29,7 +29,7 @@ module "eks" {
     }
     two = {
       name            = "ng-2-${local.resource_name}"
-      instance_types  = ["t2.micro"]
+      instance_types  = ["t2.large"]
       min_size        = 1
       max_size        = 2
       desired_size    = 1
