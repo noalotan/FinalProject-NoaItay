@@ -1,3 +1,25 @@
+resource "aws_security_group" "eks_sg" {
+  name        = "eks-sg-${local.resource_name}"
+  description = "Security group for EKS cluster"
+  vpc_id      = var.vpc_id
+
+  ingress {
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    security_groups = ["sg-00517b0aa62592c6d"]  # Allow traffic from EKS SG
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"  # Allows all outbound traffic
+    cidr_blocks = ["0.0.0.0/0"]  # Adjust as necessary
+  }
+
+  tags = local.billing_tags
+}
+
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
   version = "20.8.5"
