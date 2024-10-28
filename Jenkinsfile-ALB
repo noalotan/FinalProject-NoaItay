@@ -22,13 +22,6 @@ pipeline {
                 }
             }
         }
-        stage('Download IAM Policy') {
-            steps {
-                script {
-                    sh "curl -O ${IAM_POLICY_URL}"
-                }
-            }
-        }
 
         stage('Create IAM Service Account') {
             steps {
@@ -44,7 +37,7 @@ pipeline {
                 script {
                     sh "helm repo add eks ${HELM_REPO}"
                     sh "helm repo update"
-                    sh "helm install aws-load-balancer-controller eks/aws-load-balancer-controller -n kube-system --set clusterName=${CLUSTER_NAME} --set serviceAccount.create=false --set serviceAccount.name=${SERVICE_ACCOUNT_NAME}"
+                    sh "helm upgrade --install aws-load-balancer-controller eks/aws-load-balancer-controller -n kube-system --set clusterName=${CLUSTER_NAME} --set serviceAccount.create=false --set serviceAccount.name=${SERVICE_ACCOUNT_NAME}"
                 }
             }
         }
