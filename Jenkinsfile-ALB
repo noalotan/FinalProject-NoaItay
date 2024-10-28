@@ -22,7 +22,13 @@ pipeline {
                 }
             }
         }
-
+        stage('Configure kubectl to the right cluster') {
+            steps {
+                script {
+                   sh "aws eks update-kubeconfig --name cluster-noa-itay --region us-east-1"
+                }
+            }
+        }
         stage('Create IAM Service Account') {
             steps {
                 script {
