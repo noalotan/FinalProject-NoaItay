@@ -30,14 +30,6 @@ pipeline {
             }
         }
 
-        stage('Create IAM Policy') {
-            steps {
-                script {
-                    sh "aws iam create-policy --policy-name ${POLICY_NAME} --policy-document file://iam_policy.json"
-                }
-            }
-        }
-
         stage('Create IAM Service Account') {
             steps {
                 script {
