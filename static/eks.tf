@@ -17,7 +17,9 @@ resource "aws_security_group" "eks_sg" {
     cidr_blocks = ["0.0.0.0/0"]  # Adjust as necessary
   }
 
-  tags = local.billing_tags
+  tags = merge(local.billing_tags, {
+    Name = "eks-sg-${local.resource_name}"  # Adding a specific name tag
+  })
 }
 
 module "eks" {
