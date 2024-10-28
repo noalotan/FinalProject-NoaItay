@@ -26,8 +26,8 @@ metadata:
   namespace: status-page
 spec:
   selector:
-    app: apache
-  type: ClusterIP
+    app: status-page
+  type: LoadBalancer
   ports:
     - protocol: TCP
       port: 80
