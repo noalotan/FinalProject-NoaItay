@@ -1,3 +1,27 @@
+resource "aws_security_group" "rds_sg" {
+  name        = "rds-sg-${local.resource_name}"
+  description = "Security group for RDS"
+  vpc_id      = local.vpc_id
+
+  ingress {
+    from_port   = 5432
+    to_port     = 5432
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]  # Adjust to your needs
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = merge(local.billing_tags, {
+    Name = "rds-sg-${local.resource_name}"  # Adding a specific name tag
+  })
+}
+
 resource "aws_db_subnet_group" "mydb_subnet_group" {
   name       = var.db_subnet_group_name
   subnet_ids = var.private_subnets
