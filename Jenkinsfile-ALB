@@ -56,19 +56,19 @@ pipeline {
                 }
             }
         }
-
+       
         stage('Apply Ingress Class Configuration') {
             steps {
-                script {
-                    sh "kubectl apply -f ingress/ingress-class.yaml"
+                dir (ingress) {
+                    sh "kubectl apply -f ingress-class.yaml"
                 }
             }
         }
 
         stage('Apply Ingress Configuration') {
             steps {
-                script {
-                    sh "kubectl apply -f ingress/ingress.yaml"
+                dir (ingress) {
+                    sh "kubectl apply -f ingress.yaml"
                 }
             }
         }
