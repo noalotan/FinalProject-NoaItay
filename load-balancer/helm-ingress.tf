@@ -12,5 +12,8 @@ resource "helm_release" "nginx_ingress" {
   set {
     name  = "controller.service.type"
     value = "LoadBalancer"
+
+    tags = {
+    Project = "TeamA"
   }
 }
