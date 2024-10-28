@@ -6,7 +6,7 @@ pipeline {
         CLUSTER_NAME = 'cluster-noa-itay'
         SERVICE_ACCOUNT_NAME = 'aws-load-balancer-controller'
         ROLE_NAME = 'AmazonEKSLoadBalancerControllerRole'
-        POLICY_NAME = 'AWSLoadBalancerControllerIAMPolicy'
+        POLICY_NAME = 'AWSLoadBalancerControllerIAMPolicy-Itay-Noa'
         IAM_POLICY_URL = 'https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/v2.7.2/docs/install/iam_policy.json'
         HELM_REPO = 'https://aws.github.io/eks-charts'
     }
