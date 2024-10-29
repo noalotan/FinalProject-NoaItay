@@ -7,9 +7,9 @@ pipeline {
     stages {
         stage('Build Docker Image') {
             steps {
-                dir('opt/status-page') {
+                script {
                     // Build the Docker image with a specific tag
-                    docker.build("${DOCKER_IMAGE}:latest")
+                    docker.build("${DOCKER_IMAGE}:latest", "-f opt/status-page/ .)
                 }
             }
         }
