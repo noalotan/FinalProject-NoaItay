@@ -8,8 +8,12 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    // Build the Docker image with a specific tag
-                    docker.build("${DOCKER_IMAGE}:latest", "-f opt/status-page/ .")
+                    withCredentials([usernamePassword(credentialsId: 'Docker-itay', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                        sh """
+                        docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+                        """
+
+                    }
                 }
             }
         }
