@@ -82,3 +82,15 @@ resource "aws_eks_addon" "coredns" {
   cluster_name              = module.eks.cluster_name
   addon_name                = "coredns"
 }
+
+# EKS Managed Node Group Security Groups Outputs
+output "managed_node_group_security_groups" {
+  value = module.eks.node_groups[*].security_group_ids
+  description = "The security group IDs associated with the managed node groups."
+}
+
+# EKS Cluster Security Group Output
+output "eks_cluster_security_group_id" {
+  value = module.eks.cluster_security_group_id
+  description = "The security group ID associated with the EKS cluster."
+}
