@@ -29,8 +29,8 @@ pipeline {
             }
         }
 
-       stage('Check IAM Service Account') {
-           steps {
+        stage('Check IAM Service Account') {
+            steps {
                 script {
                     // Output the current context
                     sh "kubectl config current-context"
@@ -54,11 +54,7 @@ pipeline {
                         """
                     } else {
                         echo "IAM Service Account already exists, skipping creation."
-            }
-        }
-    }
-}
-
+                    }
                 }
             }
         }
