@@ -18,7 +18,7 @@ pipeline {
                 }
             }
         }
-        
+
         stage('Update Kubeconfig') {
             steps {
                 script {
@@ -29,19 +29,26 @@ pipeline {
             }
         }
 
-        stage('Create IAM Service Account') {
+        stage('Check IAM Service Account') {
             steps {
                 script {
-                    sh """
-                    eksctl create iamserviceaccount \\
-                      --cluster=${CLUSTER_NAME} \\
-                      --region ${REGION_NAME} \\
-                      --namespace=kube-system \\
-                      --name=aws-load-balancer-controller \\
-                      --role-name AmazonEKSLoadBalancerControllerRole \\
-                      --attach-policy-arn=${POLICY_ARN} \\
-                      --approve
-                    """
+                    // Check if the service account already exists
+                    def exists = sh(script: "kubectl get serviceaccount aws-load-balancer-controller -n kube-system --ignore-not-found", returnStatus: true)
+                    if (exists != 0) {
+                        // If not exists, create it
+                        sh """
+                        eksctl create iamserviceaccount \\
+                          --cluster=${CLUSTER_NAME} \\
+                          --region ${REGION_NAME} \\
+                          --namespace=kube-system \\
+                          --name=aws-load-balancer-controller \\
+                          --role-name AmazonEKSLoadBalancerControllerRole \\
+                          --attach-policy-arn=${POLICY_ARN} \\
+                          --approve
+                        """
+                    } else {
+                        echo "IAM Service Account already exists, skipping creation."
+                    }
                 }
             }
         }
@@ -49,15 +56,21 @@ pipeline {
         stage('Install AWS Load Balancer Controller') {
             steps {
                 script {
-                    sh """
-                    helm repo add eks https://aws.github.io/eks-charts
-                    helm repo update eks
-                    helm update aws-load-balancer-controller eks/aws-load-balancer-controller \\
-                      -n kube-system \\
-                      --set clusterName=${CLUSTER_NAME} \\
-                      --set serviceAccount.create=false \\
-                      --set serviceAccount.name=aws-load-balancer-controller
-                    """
+                    // Check if the controller is already installed
+                    def installed = sh(script: "helm list -n kube-system | grep aws-load-balancer-controller", returnStatus: true)
+                    if (installed != 0) {
+                        sh """
+                        helm repo add eks https://aws.github.io/eks-charts
+                        helm repo update eks
+                        helm install aws-load-balancer-controller eks/aws-load-balancer-controller \\
+                          -n kube-system \\
+                          --set clusterName=${CLUSTER_NAME} \\
+                          --set serviceAccount.create=false \\
+                          --set serviceAccount.name=aws-load-balancer-controller
+                        """
+                    } else {
+                        echo "AWS Load Balancer Controller already installed, skipping installation."
+                    }
                 }
             }
         }
