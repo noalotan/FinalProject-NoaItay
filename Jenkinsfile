@@ -1,7 +1,6 @@
 pipeline {
     agent any
     environment {
-        DOCKER_HUB_CREDENTIALS = credentials('Docker-itay') 
         DOCKER_IMAGE = "itayshlanger/status-page"  
     }
     stages {
@@ -17,11 +16,11 @@ pipeline {
                 }
             }
         }
-        stage('Login to Docker Hub') {
+       stage('Build Docker Image') {
             steps {
                 script {
-                    // Login to Docker Hub using the credentials
-                    sh "echo ${DOCKER_HUB_CREDENTIALS_PSW} | docker login -u ${DOCKER_HUB_CREDENTIALS_USR} --password-stdin"
+                    // Build the Docker image with a specific tag
+                    docker.build("${DOCKER_IMAGE}:latest")
                 }
             }
         }
