@@ -4,7 +4,7 @@ pipeline {
         DOCKER_IMAGE = "itayshlanger/status-page"  
     }
     stages {
-        stage('Build Docker Image') {
+        stage('Login to Docker') {
             steps {
                 script {
                     withCredentials([usernamePassword(credentialsId: 'Docker-itay', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
