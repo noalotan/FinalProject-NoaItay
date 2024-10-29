@@ -9,7 +9,7 @@ pipeline {
             steps {
                 script {
                     // Build the Docker image with a specific tag
-                    docker.build("${DOCKER_IMAGE}:latest", "-f opt/status-page/ .)
+                    docker.build("${DOCKER_IMAGE}:latest", "-f opt/status-page/ .")
                 }
             }
         }
