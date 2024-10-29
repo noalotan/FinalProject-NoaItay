@@ -26,8 +26,8 @@ metadata:
   namespace: status-page
 spec:
   selector:
-    app: status-page
-  type: LoadBalancer
+    app: nginx
+  type: NodePort
   ports:
     - protocol: TCP
       port: 80
