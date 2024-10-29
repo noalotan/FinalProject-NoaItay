@@ -45,8 +45,8 @@ pipeline {
             steps {
                 script {
                     sh """
-                    kubectl apply -f ingress-class.yaml
-                    kubectl apply -f ingress.yaml
+                    kubectl apply -f ingress/ingress-class.yaml
+                    kubectl apply -f ingress/ingress.yaml
                     """
                 }
             }
