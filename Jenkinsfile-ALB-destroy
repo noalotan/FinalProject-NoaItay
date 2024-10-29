@@ -13,8 +13,8 @@ pipeline {
             steps {
                 script {
                     sh """
-                    kubectl delete -f ingress-class.yaml || echo "Ingress class not found."
-                    kubectl delete -f ingress.yaml || echo "Ingress not found."
+                    kubectl delete -f ingress/ingress-class.yaml || echo "Ingress class not found."
+                    kubectl delete -f ingress/ingress.yaml || echo "Ingress not found."
                     """
                 }
             }
