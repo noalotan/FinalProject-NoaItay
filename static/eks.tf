@@ -1,27 +1,3 @@
-resource "aws_security_group" "eks_sg" {
-  name        = "eks-sg-${local.resource_name}"
-  description = "Security group for EKS cluster"
-  vpc_id      = var.vpc_id
-
-  ingress {
-    from_port   = 443
-    to_port     = 443
-    protocol    = "tcp"
-    security_groups = ["sg-00517b0aa62592c6d"]  # Allow traffic from EKS SG
-  }
-
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"  # Allows all outbound traffic
-    cidr_blocks = ["0.0.0.0/0"]  # Adjust as necessary
-  }
-
-  tags = merge(local.billing_tags, {
-    Name = "eks-sg-${local.resource_name}"  # Adding a specific name tag
-  })
-}
-
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
   version = "20.8.5"
@@ -34,7 +10,7 @@ module "eks" {
   vpc_id     = var.vpc_id
   subnet_ids = var.private_subnets
 
-  iam_role_arn = "arn:aws:iam::992382545251:role/status-page-itay-noa"  # Updated line
+  iam_role_arn = "arn:aws:iam::992382545251:role/status-page-itay-noa"
 
   eks_managed_node_group_defaults = {
     ami_type    = "AL2_x86_64"
@@ -61,30 +37,39 @@ module "eks" {
     }
   }
 
- cluster_security_group_id = aws_security_group.eks_sg.id
-
   tags = local.billing_tags
 }
 
 # Add-ons for EKS cluster
-
 resource "aws_eks_addon" "kube_proxy" {
-  cluster_name              = module.eks.cluster_name
-  addon_name                = "kube-proxy"
+  cluster_name = module.eks.cluster_name
+  addon_name   = "kube-proxy"
 }
 
 resource "aws_eks_addon" "vpc_cni" {
-  cluster_name              = module.eks.cluster_name
-  addon_name                = "vpc-cni"
+  cluster_name = module.eks.cluster_name
+  addon_name   = "vpc-cni"
 }
 
 resource "aws_eks_addon" "coredns" {
-  cluster_name              = module.eks.cluster_name
-  addon_name                = "coredns"
+  cluster_name = module.eks.cluster_name
+  addon_name   = "coredns"
 }
 
 # EKS Cluster Security Group Output
 output "eks_cluster_security_group_id" {
-  value = module.eks.cluster_security_group_id
+  value       = module.eks.cluster_security_group_id
   description = "The security group ID associated with the EKS cluster."
+}
+
+# Ingress Rule for HTTPS traffic from a specific security group
+resource "aws_security_group_rule" "allow_https_from_sg" {
+  type                     = "ingress"
+  from_port               = 443
+  to_port                 = 443
+  protocol                = "tcp"
+  security_group_id       = module.eks.cluster_security_group_id  # Use the cluster's SG ID
+  source_security_group_id = "sg-00517b0aa62592c6d"  # Allow traffic from this SG
+
+  description = "Allow HTTPS traffic from specified security group"
 }
