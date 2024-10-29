@@ -1,8 +1,5 @@
 pipeline {
     agent any
-    environment {
-        DOCKER_IMAGE = "itayshlanger/status-page"  
-    }
     stages {
         stage('Login to Docker') {
             steps {
@@ -18,17 +15,15 @@ pipeline {
         }
        stage('Build Docker Image') {
             steps {
-                script {
-                    // Build the Docker image with a specific tag
-                    docker.build("${DOCKER_IMAGE}:latest")
+                dir('opt/status-page') {
+                    sh " docker build -t itayshlanger/status-page:latest ."
                 }
             }
         }
         stage('Push Docker Image') {
             steps {
                 script {
-                    // Push the image to Docker Hub
-                    docker.image("${DOCKER_IMAGE}:latest").push()
+                    sh "docker push itayshlanger/status-page:latest"
                 }
             }
         }
