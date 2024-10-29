@@ -1,39 +1,26 @@
 pipeline {
-    agent any
+    agent any 
 
     environment {
-        AWS_REGION = 'us-east-1'
         CLUSTER_NAME = 'cluster-noa-itay'
-        SERVICE_ACCOUNT_NAME = 'aws-load-balancer-controller'
-        ROLE_NAME = 'AmazonEKSLoadBalancerControllerRole'
-        POLICY_NAME = 'AWSLoadBalancerControllerIAMPolicy'
-        IAM_POLICY_URL = 'https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/v2.7.2/docs/install/iam_policy.json'
-        HELM_REPO = 'https://aws.github.io/eks-charts'
+        REGION_NAME = 'us-east-1'
+        POLICY_ARN = 'arn:aws:iam::992382545251:policy/AWSLoadBalancerControllerIAMPolicy'
     }
 
     stages {
-        stage('Setup AWS Credentials') {
-            steps {
-                withCredentials([aws(credentialsId: 'aws credentials')]) {
-                    script {
-                        env.AWS_ACCESS_KEY_ID = "${AWS_ACCESS_KEY_ID}"
-                        env.AWS_SECRET_ACCESS_KEY = "${AWS_SECRET_ACCESS_KEY}"
-                    }
-                }
-            }
-        }
-        stage('Configure kubectl to the right cluster') {
-            steps {
-                script {
-                   sh "aws eks update-kubeconfig --name cluster-noa-itay --region us-east-1"
-                }
-            }
-        }
         stage('Create IAM Service Account') {
             steps {
                 script {
-                    def policyArn = sh(script: "aws iam list-policies --query \"Policies[?PolicyName=='${POLICY_NAME}'].Arn\" --output text", returnStdout: true).trim()
-                    sh "eksctl create iamserviceaccount --cluster=${CLUSTER_NAME} --region=${AWS_REGION} --namespace=kube-system --name=${SERVICE_ACCOUNT_NAME} --role-name=${ROLE_NAME} --attach-policy-arn=${policyArn} --approve"
+                    sh """
+                    eksctl create iamserviceaccount \\
+                      --cluster=${CLUSTER_NAME} \\
+                      --region ${REGION_NAME} \\
+                      --namespace=kube-system \\
+                      --name=aws-load-balancer-controller \\
+                      --role-name AmazonEKSLoadBalancerControllerRole \\
+                      --attach-policy-arn=${POLICY_ARN} \\
+                      --approve
+                    """
                 }
             }
         }
@@ -41,33 +28,34 @@ pipeline {
         stage('Install AWS Load Balancer Controller') {
             steps {
                 script {
-                    sh "helm repo add eks ${HELM_REPO}"
-                    sh "helm repo update"
-                    sh "helm upgrade --install aws-load-balancer-controller eks/aws-load-balancer-controller -n kube-system --set clusterName=${CLUSTER_NAME} --set serviceAccount.create=false --set serviceAccount.name=${SERVICE_ACCOUNT_NAME}"
-                }
-            }
-        }
-       
-        stage('Apply Ingress Class Configuration') {
-            steps {
-                dir('ingress') {
-                    sh "kubectl apply -f ingress-class.yaml"
+                    sh """
+                    helm repo add eks https://aws.github.io/eks-charts
+                    helm repo update eks
+                    helm install aws-load-balancer-controller eks/aws-load-balancer-controller \\
+                      -n kube-system \\
+                      --set clusterName=${CLUSTER_NAME} \\
+                      --set serviceAccount.create=false \\
+                      --set serviceAccount.name=aws-load-balancer-controller
+                    """
                 }
             }
         }
 
-        stage('Apply Ingress Configuration') {
+        stage('Apply Ingress Resources') {
             steps {
-                dir('ingress') {
-                    sh "kubectl apply -f ingress.yaml"
+                script {
+                    sh """
+                    kubectl apply -f ingress-class.yaml
+                    kubectl apply -f ingress.yaml
+                    """
                 }
             }
         }
     }
-    
+
     post {
         success {
-            echo 'Deployment succeeded!'
+            echo 'Deployment completed successfully!'
         }
         failure {
             echo 'Deployment failed!'
