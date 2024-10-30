@@ -19,25 +19,36 @@ module "eks" {
   }
 
   eks_managed_node_groups = {
-    one = {
-      name            = "ng-1-${local.resource_name}"
+    main = {
+      name            = "ng-main-${local.resource_name}"
       instance_types  = ["t2.large"]
-      min_size        = 1
-      max_size        = 5
-      desired_size    = 1
-      tags            = local.billing_tags
-    }
-    two = {
-      name            = "ng-2-${local.resource_name}"
-      instance_types  = ["t2.large"]
-      min_size        = 1
-      max_size        = 5
-      desired_size    = 1
+      min_size        = 2  # Minimum size for the node group
+      max_size        = 5  # Maximum size for autoscaling
+      desired_size    = 2  # Desired size for initial deployment
       tags            = local.billing_tags
     }
   }
 
   tags = local.billing_tags
+}
+
+# Enable Cluster Autoscaler
+resource "aws_eks_node_group" "main" {
+  cluster_name    = module.eks.cluster_name
+  node_group_name = "ng-main-${local.resource_name}"
+  node_role_arn   = "arn:aws:iam::992382545251:role/status-page-node-itay-noa"
+  subnet_ids      = var.private_subnets
+
+  scaling_config {
+    desired_size = 2
+    min_size     = 2
+    max_size     = 5
+  }
+
+  instance_type = "t2.large"
+  ami_type      = "AL2_x86_64"
+
+  depends_on = [module.eks]
 }
 
 # Add-ons for EKS cluster
