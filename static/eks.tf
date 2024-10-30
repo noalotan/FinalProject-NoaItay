@@ -45,7 +45,7 @@ resource "aws_eks_node_group" "main" {
     max_size     = 5
   }
 
-  instance_type = "t2.large"
+  instance_types = "t2.large"
   ami_type      = "AL2_x86_64"
 
   depends_on = [module.eks]
