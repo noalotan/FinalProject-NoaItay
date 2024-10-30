@@ -86,37 +86,21 @@ pipeline {
                 }
             }
         }
-
-        stage('Wait for Webhook to be Ready') {
+        stage('Apply Ingress Class') {
             steps {
                 script {
-                    echo "Waiting for AWS Load Balancer Controller webhook to be ready..."
-                    
-                    // Wait for the webhook service to be available
-                    def ready = false
-                    for (int i = 0; i < 10; i++) { // Wait for up to 10 attempts
-                        ready = sh(script: "kubectl get pods -n kube-system | grep aws-load-balancer-webhook | grep Running", returnStatus: true) == 0
-                        if (ready) {
-                            break
-                        }
-                        sleep(10) // Wait for 10 seconds before checking again
-                    }
-                    
-                    if (!ready) {
-                        error "AWS Load Balancer Controller webhook is not ready after waiting."
-                    } else {
-                        echo "Webhook is ready."
-                    }
+                    echo "Applying ingress Class..."
+                    sh """
+                    kubectl apply -f ingress/ingress-class.yaml
+                    """
                 }
             }
         }
-
         stage('Apply Ingress Resources') {
             steps {
                 script {
                     echo "Applying ingress resources..."
                     sh """
-                    kubectl apply -f ingress/ingress-class.yaml
                     kubectl apply -f ingress/ingress.yaml
                     """
                 }
