@@ -12,7 +12,6 @@ COPY contrib/*.service /etc/systemd/system/
 RUN apt-get update && \
     apt install -y python3 python3-pip python3-venv python3-dev build-essential libxml2-dev libxslt1-dev libffi-dev libpq-dev libssl-dev zlib1g-dev && \    
     apt-get install -y systemd && \
-    bash upgrade.sh && \
     apt-get clean && \
     addgroup --system status-page && \
     adduser --system --group status-page
@@ -21,4 +20,4 @@ RUN apt-get update && \
 EXPOSE 8001
 
 # Command to run systemd
-CMD ["/opt/status-page/venv/bin/gunicorn", "--pid" ,"/var/tmp/status-page.pid" ,"--pythonpath" ,"/opt/status-page/statuspage" ,"--config" ,"/opt/status-page/gunicorn.py", "statuspage.wsgi"]
+CMD /bin/sh -c "./upgrade.sh && /opt/status-page/venv/bin/gunicorn --pid /var/tmp/status-page.pid --pythonpath /opt/status-page/statuspage --config /opt/status-page/gunicorn.py statuspage.wsgi"
