@@ -49,7 +49,7 @@ pipeline {
                           --region=${REGION_NAME} \\
                           --namespace=kube-system \\
                           --name=aws-load-balancer-controller \\
-                          --role-name AmazonEKSLoadBalancerControllerRole \\
+                          --role-name AmazonEKSLoadBalancerControllerRole-noa-itay \\
                           --attach-policy-arn=${POLICY_ARN} \\
                           --approve
                         """
