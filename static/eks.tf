@@ -32,39 +32,35 @@ module "eks" {
   tags = local.billing_tags
 }
 
-# Enable Cluster Autoscaler
-resource "aws_eks_node_group" "main" {
-  cluster_name    = module.eks.cluster_name
-  node_group_name = "ng-main-${local.resource_name}"
-  node_role_arn   = "arn:aws:iam::992382545251:role/status-page-node-itay-noa"
-  subnet_ids      = var.private_subnets
-
-  scaling_config {
-    desired_size = 2
-    min_size     = 2
-    max_size     = 5
-  }
-
-  instance_types = ["t2.large"]
-  ami_type      = "AL2_x86_64"
-
-  depends_on = [module.eks]
 }
 
 # Add-ons for EKS cluster
 resource "aws_eks_addon" "kube_proxy" {
   cluster_name = module.eks.cluster_name
   addon_name   = "kube-proxy"
+
+  depends_on = [module.eks]
 }
 
 resource "aws_eks_addon" "vpc_cni" {
   cluster_name = module.eks.cluster_name
   addon_name   = "vpc-cni"
+
+  depends_on = [module.eks]
 }
 
 resource "aws_eks_addon" "coredns" {
   cluster_name = module.eks.cluster_name
   addon_name   = "coredns"
+
+  depends_on = [module.eks]
+}
+resource "aws_eks_addon" "cluster_autoscaler" {
+  cluster_name = module.eks.cluster_name
+  addon_name   = "v1.25.0-cluster-autoscaler"
+
+  depends_on = [module.eks]
+
 }
 
 # EKS Cluster Security Group Output
