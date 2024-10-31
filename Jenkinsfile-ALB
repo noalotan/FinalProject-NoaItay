@@ -86,6 +86,14 @@ pipeline {
                 }
             }
         }
+         stage('Wait') {
+            steps {
+                script {
+                    echo 'Waiting for 30 seconds...'
+                    sleep(time: 30, unit: 'SECONDS') // Adjust time and unit as needed
+                }
+            }
+        }
         stage('Apply Ingress Class') {
             steps {
                 script {
