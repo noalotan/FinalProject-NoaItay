@@ -86,7 +86,7 @@ pipeline {
                 }
             }
         }
-         stage('Wait') {
+        stage('Wait') {
             steps {
                 script {
                     echo 'Waiting for 30 seconds...'
