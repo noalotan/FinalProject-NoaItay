@@ -24,8 +24,8 @@ pipeline {
                     def subdomains = ['statuspage', 'grafana']
 
                     // Retrieve Load Balancer DNS
-                    def ingressName = 'my-ingress'  // Replace with your actual Ingress name
-                    def namespace = 'default'  // Replace with your actual namespace
+                    def ingressName = 'alb-ingress-rules'  // Replace with your actual Ingress name
+                    def namespace = 'status-page'  // Replace with your actual namespace
                     
                     loadBalancerDNS = sh(script: "kubectl get ingress ${ingressName} -n ${namespace} -o jsonpath='{.status.loadBalancer.ingress[0].hostname}'", returnStdout: true).trim()
                     echo "Load Balancer DNS: ${loadBalancerDNS}"
