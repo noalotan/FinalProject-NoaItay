@@ -1,84 +1,49 @@
 pipeline {
     agent any
-    
+
     environment {
+        GODADDY_KEY = 'h1okCf5NCjpb_G7fc2KGSt1oKUxAfG5x48d' // Your GoDaddy API key
+        GODADDY_SECRET = 'HZcaigcV5VqZx3idQNdFUp' // Your GoDaddy API secret
         DOMAIN = 'itay-noa.online'
-        API_KEY = 'h1okCf5NCjpb_G7fc2KGSt1oKUxAfG5x48d'
-        API_SECRET = 'HZcaigcV5VqZx3idQNdFUp'
+        AWS_LB_DNS = 'alb-ingress-noa-itay-1726286553.us-east-1.elb.amazonaws.com' // Replace with your actual AWS Load Balancer DNS
     }
 
     stages {
-        stage('Setup AWS Credentials') {
-            steps {
-                withCredentials([aws(credentialsId: 'aws credentials')]) {
-                    script {
-                        env.AWS_ACCESS_KEY_ID = "${AWS_ACCESS_KEY_ID}"
-                        env.AWS_SECRET_ACCESS_KEY = "${AWS_SECRET_ACCESS_KEY}"
-                    }
-                }
-            }
-        }
-
-        stage('Check GoDaddy API Key Permissions') {
+        stage('Update DNS Records') {
             steps {
                 script {
-                    // Use a shell command to encode credentials
-                    def authHeader = sh(script: "echo -n '${API_KEY}:${API_SECRET}' | base64", returnStdout: true).trim()
+                    // Define the subdomains
+                    def records = [
+                        [subdomain: 'statuspage'],
+                        [subdomain: 'grafana']
+                    ]
 
-                    def response = sh(script: """
-                        curl -X GET "https://api.godaddy.com/v1/domains/${DOMAIN}/records" \
-                        -H "Authorization: Basic ${authHeader}" \
-                        -H "Content-Type: application/json"
-                    """, returnStdout: true)
-                    
-                    echo "API Key Permission Check Response: ${response}"
-                }
-            }
-        }
+                    records.each { record ->
+                        def subdomain = record.subdomain
 
-        stage('Set Subdomains') {
-            steps {
-                script {
-                    def subdomains = ['statuspage', 'grafana']
+                        // Construct the API request
+                        def url = "https://api.godaddy.com/v1/domains/${DOMAIN}/records/CNAME/${subdomain}"
+                        def requestBody = "[{\"data\": \"${AWS_LB_DNS}\", \"ttl\": 600}]"
 
-                    // Retrieve Load Balancer DNS
-                    def ingressName = 'alb-ingress-rules'  // Replace with your actual Ingress name
-                    def namespace = 'status-page'  // Replace with your actual namespace
-                    
-                    def loadBalancerDNS = sh(script: "kubectl get ingress ${ingressName} -n ${namespace} -o jsonpath='{.status.loadBalancer.ingress[0].hostname}'", returnStdout: true).trim()
-                    echo "Load Balancer DNS: ${loadBalancerDNS}"
-
-                    // Update DNS records for each subdomain
-                    subdomains.each { subdomain ->
-                        def url = "https://api.godaddy.com/v1/domains/${DOMAIN}/records/A/${subdomain}"
-
-                        def payload = subdomain == 'statuspage' ?
-                            "[{\"data\": \"${loadBalancerDNS}\", \"ttl\": 600}]" :
-                            "[{\"data\": \"${DOMAIN}\", \"ttl\": 600}]"
-
+                        // Make the API call to update DNS records
                         def response = sh(script: """
-                            curl -X PUT "${url}" \
-                            -H "Authorization: Basic ${authHeader}" \
+                            curl -X PUT -H "Authorization: sso-key \${GODADDY_KEY}:\${GODADDY_SECRET}" \
                             -H "Content-Type: application/json" \
-                            -d '${payload}'
-                        """, returnStdout: true)
+                            -d '${requestBody}' \
+                            '${url}'
+                        """, returnStdout: true).trim()
 
-                        echo "Response for ${subdomain}.${DOMAIN}: ${response}"
+                        // Print the response for debugging
+                        echo "Updated DNS record for ${subdomain}: ${response}"
                     }
                 }
             }
         }
     }
-    
+
     post {
         always {
-            echo 'Pipeline finished.'
-        }
-        success {
-            echo 'DNS update was successful!'
-        }
-        failure {
-            echo 'DNS update failed!'
+            echo 'DNS records update process finished.'
         }
     }
 }
