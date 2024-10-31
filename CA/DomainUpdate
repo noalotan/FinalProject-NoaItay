@@ -1,0 +1,59 @@
+pipeline {
+    agent any
+    
+    environment {
+        DOMAIN = 'itay-noa.online'
+        SUBDOMAINS = ['grafana', 'statuspage']
+    }
+
+    stages {
+        stage('Get Load Balancer DNS') {
+            steps {
+                script {
+                    // Replace with your actual Ingress name and namespace
+                    def ingressName = 'alb-ingress-rules'
+                    def namespace = 'status-page'
+                    
+                    // Get Load Balancer DNS from the Ingress
+                    loadBalancerDNS = sh(script: "kubectl get ingress ${ingressName} -n ${namespace} -o jsonpath='{.status.loadBalancer.ingress[0].hostname}'", returnStdout: true).trim()
+                    echo "Load Balancer DNS: ${loadBalancerDNS}"
+                }
+            }
+        }
+
+        stage('Update DNS Records') {
+            steps {
+                script {
+                    withCredentials([usernamePassword(credentialsId: 'godaddy-api-credentials', usernameVariable: 'API_KEY', passwordVariable: 'API_SECRET')]) {
+                        SUBDOMAINS.each { subdomain ->
+                            def url = "https://api.godaddy.com/v1/domains/${DOMAIN}/records/A/${subdomain}"
+                            def jsonPayload = "[{\"data\": \"${loadBalancerDNS}\", \"ttl\": 600}]"
+
+                            // Update GoDaddy DNS record
+                            def response = sh(script: """
+                                curl -X PUT "${url}" \
+                                -H "Authorization: Basic \$(echo -n '\$API_KEY:\$API_SECRET' | base64)" \
+                                -H "Content-Type: application/json" \
+                                -d '${jsonPayload}'
+                            """, returnStdout: true)
+
+                            echo "Response for ${subdomain}.${DOMAIN}: ${response}"
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    post {
+        always {
+            echo 'Pipeline finished.'
+        }
+        success {
+            echo 'DNS update was successful!'
+        }
+        failure {
+            echo 'DNS update failed!'
+        }
+    }
+}
