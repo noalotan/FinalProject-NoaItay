@@ -32,8 +32,6 @@ module "eks" {
   tags = local.billing_tags
 }
 
-}
-
 # Add-ons for EKS cluster
 resource "aws_eks_addon" "kube_proxy" {
   cluster_name = module.eks.cluster_name
