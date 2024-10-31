@@ -17,6 +17,22 @@ pipeline {
             }
         }
 
+        stage('Check GoDaddy API Key Permissions') {
+            steps {
+                script {
+                    withCredentials([usernamePassword(credentialsId: 'godaddy-api-credentials', usernameVariable: 'API_KEY', passwordVariable: 'API_SECRET')]) {
+                        def response = sh(script: """
+                            curl -X GET "https://api.godaddy.com/v1/domains/${DOMAIN}/records" \
+                            -H "Authorization: Basic \$(echo -n '\$API_KEY:\$API_SECRET' | base64)" \
+                            -H "Content-Type: application/json"
+                        """, returnStdout: true)
+                        
+                        echo "API Key Permission Check Response: ${response}"
+                    }
+                }
+            }
+        }
+
         stage('Set Subdomains') {
             steps {
                 script {
@@ -27,7 +43,7 @@ pipeline {
                     def ingressName = 'alb-ingress-rules'  // Replace with your actual Ingress name
                     def namespace = 'status-page'  // Replace with your actual namespace
                     
-                    loadBalancerDNS = sh(script: "kubectl get ingress ${ingressName} -n ${namespace} -o jsonpath='{.status.loadBalancer.ingress[0].hostname}'", returnStdout: true).trim()
+                    def loadBalancerDNS = sh(script: "kubectl get ingress ${ingressName} -n ${namespace} -o jsonpath='{.status.loadBalancer.ingress[0].hostname}'", returnStdout: true).trim()
                     echo "Load Balancer DNS: ${loadBalancerDNS}"
 
                     // Update DNS records for each subdomain
