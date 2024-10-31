@@ -21,9 +21,12 @@ pipeline {
             steps {
                 script {
                     withCredentials([usernamePassword(credentialsId: 'godaddy-api-credentials', usernameVariable: 'API_KEY', passwordVariable: 'API_SECRET')]) {
+                        // Encode credentials manually using plain string concatenation
+                        def authHeader = "Basic " + "${API_KEY}:${API_SECRET}".toString().bytes.encodeBase64().toString()
+                        
                         def response = sh(script: """
                             curl -X GET "https://api.godaddy.com/v1/domains/${DOMAIN}/records" \
-                            -H "Authorization: Basic \$(echo -n '\$API_KEY:\$API_SECRET' | base64)" \
+                            -H "Authorization: ${authHeader}" \
                             -H "Content-Type: application/json"
                         """, returnStdout: true)
                         
@@ -36,7 +39,6 @@ pipeline {
         stage('Set Subdomains') {
             steps {
                 script {
-                    // Define subdomains as a list in Groovy
                     def subdomains = ['statuspage', 'grafana']
 
                     // Retrieve Load Balancer DNS
@@ -48,8 +50,8 @@ pipeline {
 
                     // Update DNS records for each subdomain
                     withCredentials([usernamePassword(credentialsId: 'godaddy-api-credentials', usernameVariable: 'API_KEY', passwordVariable: 'API_SECRET')]) {
-                        // Create the Basic Auth header
-                        def authHeader = "Basic " + "${API_KEY}:${API_SECRET}".bytes.encodeBase64().toString()
+                        // Encode credentials
+                        def authHeader = "Basic " + "${API_KEY}:${API_SECRET}".toString().bytes.encodeBase64().toString()
                         
                         subdomains.each { subdomain ->
                             def url = "https://api.godaddy.com/v1/domains/${DOMAIN}/records/A/${subdomain}"
