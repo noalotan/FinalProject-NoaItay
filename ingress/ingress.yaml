@@ -28,7 +28,7 @@ spec:
                  name: prometheus-grafana
                  port:
                    number: 80
-    - host: itay-noa.online
+    - host: statuspage.itay-noa.online
     - http:
          paths:
            - path: /
