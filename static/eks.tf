@@ -53,12 +53,10 @@ resource "aws_eks_addon" "coredns" {
 
   depends_on = [module.eks]
 }
+
 resource "aws_eks_addon" "cluster_autoscaler" {
   cluster_name = module.eks.cluster_name
-  addon_name   = "v1.25.0-cluster-autoscaler"
-
-  depends_on = [module.eks]
-
+  addon_name   = "cluster-autoscaler"
 }
 
 # EKS Cluster Security Group Output
