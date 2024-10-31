@@ -21,12 +21,12 @@ pipeline {
             steps {
                 script {
                     withCredentials([usernamePassword(credentialsId: 'godaddy-api-credentials', usernameVariable: 'API_KEY', passwordVariable: 'API_SECRET')]) {
-                        // Encode credentials manually using plain string concatenation
-                        def authHeader = "Basic " + "${API_KEY}:${API_SECRET}".toString().bytes.encodeBase64().toString()
-                        
+                        // Use a shell command to encode credentials
+                        def authHeader = sh(script: "echo -n '${API_KEY}:${API_SECRET}' | base64", returnStdout: true).trim()
+
                         def response = sh(script: """
                             curl -X GET "https://api.godaddy.com/v1/domains/${DOMAIN}/records" \
-                            -H "Authorization: ${authHeader}" \
+                            -H "Authorization: Basic ${authHeader}" \
                             -H "Content-Type: application/json"
                         """, returnStdout: true)
                         
@@ -50,8 +50,8 @@ pipeline {
 
                     // Update DNS records for each subdomain
                     withCredentials([usernamePassword(credentialsId: 'godaddy-api-credentials', usernameVariable: 'API_KEY', passwordVariable: 'API_SECRET')]) {
-                        // Encode credentials
-                        def authHeader = "Basic " + "${API_KEY}:${API_SECRET}".toString().bytes.encodeBase64().toString()
+                        // Encode credentials using shell command
+                        def authHeader = sh(script: "echo -n '${API_KEY}:${API_SECRET}' | base64", returnStdout: true).trim()
                         
                         subdomains.each { subdomain ->
                             def url = "https://api.godaddy.com/v1/domains/${DOMAIN}/records/A/${subdomain}"
@@ -62,7 +62,7 @@ pipeline {
 
                             def response = sh(script: """
                                 curl -X PUT "${url}" \
-                                -H "Authorization: ${authHeader}" \
+                                -H "Authorization: Basic ${authHeader}" \
                                 -H "Content-Type: application/json" \
                                 -d '${payload}'
                             """, returnStdout: true)
