@@ -3,38 +3,36 @@ pipeline {
     
     environment {
         DOMAIN = 'itay-noa.online'
-        SUBDOMAINS = ['grafana', 'statuspage']
     }
 
     stages {
-        stage('Get Load Balancer DNS') {
+        stage('Set Subdomains') {
             steps {
                 script {
-                    // Replace with your actual Ingress name and namespace
-                    def ingressName = 'alb-ingress-rules'
-                    def namespace = 'status-page'
+                    // Define subdomains as a list in Groovy
+                    def subdomains = ['statuspage', 'grafana']
                     
-                    // Get Load Balancer DNS from the Ingress
+                    // Retrieve Load Balancer DNS
+                    def ingressName = 'my-ingress'  // Replace with your actual Ingress name
+                    def namespace = 'default'  // Replace with your actual namespace
+                    
                     loadBalancerDNS = sh(script: "kubectl get ingress ${ingressName} -n ${namespace} -o jsonpath='{.status.loadBalancer.ingress[0].hostname}'", returnStdout: true).trim()
                     echo "Load Balancer DNS: ${loadBalancerDNS}"
-                }
-            }
-        }
 
-        stage('Update DNS Records') {
-            steps {
-                script {
+                    // Update DNS records for each subdomain
                     withCredentials([usernamePassword(credentialsId: 'godaddy-api-credentials', usernameVariable: 'API_KEY', passwordVariable: 'API_SECRET')]) {
-                        SUBDOMAINS.each { subdomain ->
+                        subdomains.each { subdomain ->
                             def url = "https://api.godaddy.com/v1/domains/${DOMAIN}/records/A/${subdomain}"
-                            def jsonPayload = "[{\"data\": \"${loadBalancerDNS}\", \"ttl\": 600}]"
 
-                            // Update GoDaddy DNS record
+                            def payload = subdomain == 'statuspage' ?
+                                "[{\"data\": \"${loadBalancerDNS}\", \"ttl\": 600}]" :
+                                "[{\"data\": \"${DOMAIN}\", \"ttl\": 600}]"
+
                             def response = sh(script: """
                                 curl -X PUT "${url}" \
                                 -H "Authorization: Basic \$(echo -n '\$API_KEY:\$API_SECRET' | base64)" \
                                 -H "Content-Type: application/json" \
-                                -d '${jsonPayload}'
+                                -d '${payload}'
                             """, returnStdout: true)
 
                             echo "Response for ${subdomain}.${DOMAIN}: ${response}"
