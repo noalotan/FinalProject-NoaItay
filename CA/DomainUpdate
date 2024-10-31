@@ -6,12 +6,23 @@ pipeline {
     }
 
     stages {
+        stage('Setup AWS Credentials') {
+            steps {
+                withCredentials([aws(credentialsId: 'aws credentials')]) {
+                    script {
+                        env.AWS_ACCESS_KEY_ID = "${AWS_ACCESS_KEY_ID}"
+                        env.AWS_SECRET_ACCESS_KEY = "${AWS_SECRET_ACCESS_KEY}"
+                    }
+                }
+            }
+        }
+
         stage('Set Subdomains') {
             steps {
                 script {
                     // Define subdomains as a list in Groovy
                     def subdomains = ['statuspage', 'grafana']
-                    
+
                     // Retrieve Load Balancer DNS
                     def ingressName = 'my-ingress'  // Replace with your actual Ingress name
                     def namespace = 'default'  // Replace with your actual namespace
