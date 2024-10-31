@@ -3,6 +3,8 @@ pipeline {
     
     environment {
         DOMAIN = 'itay-noa.online'
+        API_KEY = 'h1okCf5NCjpb_G7fc2KGSt1oKUxAfG5x48d'
+        API_SECRET = 'HZcaigcV5VqZx3idQNdFUp'
     }
 
     stages {
@@ -20,18 +22,16 @@ pipeline {
         stage('Check GoDaddy API Key Permissions') {
             steps {
                 script {
-                    withCredentials([usernamePassword(credentialsId: 'godaddy-api-credentials', usernameVariable: 'API_KEY', passwordVariable: 'API_SECRET')]) {
-                        // Use a shell command to encode credentials
-                        def authHeader = sh(script: "echo -n '${API_KEY}:${API_SECRET}' | base64", returnStdout: true).trim()
+                    // Use a shell command to encode credentials
+                    def authHeader = sh(script: "echo -n '${API_KEY}:${API_SECRET}' | base64", returnStdout: true).trim()
 
-                        def response = sh(script: """
-                            curl -X GET "https://api.godaddy.com/v1/domains/${DOMAIN}/records" \
-                            -H "Authorization: Basic ${authHeader}" \
-                            -H "Content-Type: application/json"
-                        """, returnStdout: true)
-                        
-                        echo "API Key Permission Check Response: ${response}"
-                    }
+                    def response = sh(script: """
+                        curl -X GET "https://api.godaddy.com/v1/domains/${DOMAIN}/records" \
+                        -H "Authorization: Basic ${authHeader}" \
+                        -H "Content-Type: application/json"
+                    """, returnStdout: true)
+                    
+                    echo "API Key Permission Check Response: ${response}"
                 }
             }
         }
@@ -49,26 +49,21 @@ pipeline {
                     echo "Load Balancer DNS: ${loadBalancerDNS}"
 
                     // Update DNS records for each subdomain
-                    withCredentials([usernamePassword(credentialsId: 'godaddy-api-credentials', usernameVariable: 'API_KEY', passwordVariable: 'API_SECRET')]) {
-                        // Encode credentials using shell command
-                        def authHeader = sh(script: "echo -n '${API_KEY}:${API_SECRET}' | base64", returnStdout: true).trim()
-                        
-                        subdomains.each { subdomain ->
-                            def url = "https://api.godaddy.com/v1/domains/${DOMAIN}/records/A/${subdomain}"
+                    subdomains.each { subdomain ->
+                        def url = "https://api.godaddy.com/v1/domains/${DOMAIN}/records/A/${subdomain}"
 
-                            def payload = subdomain == 'statuspage' ?
-                                "[{\"data\": \"${loadBalancerDNS}\", \"ttl\": 600}]" :
-                                "[{\"data\": \"${DOMAIN}\", \"ttl\": 600}]"
+                        def payload = subdomain == 'statuspage' ?
+                            "[{\"data\": \"${loadBalancerDNS}\", \"ttl\": 600}]" :
+                            "[{\"data\": \"${DOMAIN}\", \"ttl\": 600}]"
 
-                            def response = sh(script: """
-                                curl -X PUT "${url}" \
-                                -H "Authorization: Basic ${authHeader}" \
-                                -H "Content-Type: application/json" \
-                                -d '${payload}'
-                            """, returnStdout: true)
+                        def response = sh(script: """
+                            curl -X PUT "${url}" \
+                            -H "Authorization: Basic ${authHeader}" \
+                            -H "Content-Type: application/json" \
+                            -d '${payload}'
+                        """, returnStdout: true)
 
-                            echo "Response for ${subdomain}.${DOMAIN}: ${response}"
-                        }
+                        echo "Response for ${subdomain}.${DOMAIN}: ${response}"
                     }
                 }
             }
