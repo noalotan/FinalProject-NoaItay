@@ -114,6 +114,13 @@ pipeline {
                 }
             }
         }
+        stage('Configuring Nodes Security Groups') {
+            steps {
+                script {
+                    echo "Configuring Nodes Security Groups..."
+                    sh """
+                    bash ingress/sg-conf.sh
+                    """
     }
 
     post {
