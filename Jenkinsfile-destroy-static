@@ -15,8 +15,7 @@ pipeline {
 
         stage('Terraform Init') {
             steps {
-                dir('/var/lib/jenkins/workspace/Dev-Architecture-apply
-/static') {
+                dir('/var/lib/jenkins/workspace/Dev-Architecture-apply/static') {
                     sh 'terraform init'
                 }
             }
@@ -24,8 +23,7 @@ pipeline {
 
         stage('Terraform Destroy') {
             steps {
-                dir('/var/lib/jenkins/workspace/Dev-Architecture-apply
-/static') {
+                dir('/var/lib/jenkins/workspace/Dev-Architecture-apply/static') {
                     sh 'terraform destroy -auto-approve'
                 }
             }
