@@ -18,17 +18,6 @@ metadata:
 spec:
   ingressClassName: ingres-class
   rules:
-    - host: grafana.itay-noa.online
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: prometheus-grafana
-                port:
-                  number: 80
-    - host: statuspage.itay-noa.online
       http:
         paths:
           - path: /
