@@ -15,7 +15,7 @@ pipeline {
 
         stage('Set kubectl with the right cluster') {
             steps {
-                    sh 'aws eks update-kubeconfig --name cluster-noa-itay --region us-east-1'
+                    sh 'aws eks update-kubeconfig --name cluster-noa-itay-Dev --region us-east-1'
             }
         }
 
