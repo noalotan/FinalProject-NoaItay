@@ -9,7 +9,7 @@ variable "region" {
 variable "resource_name" {
   description = "General resource name"
   type        = string
-  default     = "noa-itay-Dev"
+  default     = "noa-itay-Prod"
 }
 
 variable "billing_tags" {
