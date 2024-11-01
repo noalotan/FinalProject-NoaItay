@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
       - name: django
-        image: itayshlanger/status-page
+        image: itayshlanger/status-page-prod
         ports:
         - containerPort: 8001
 ---
