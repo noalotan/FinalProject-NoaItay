@@ -1,0 +1,35 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Setup AWS Credentials') {
+            steps {
+                withCredentials([aws(credentialsId: 'aws credentials')]) {
+                    script {
+                        env.AWS_ACCESS_KEY_ID = "${AWS_ACCESS_KEY_ID}"
+                        env.AWS_SECRET_ACCESS_KEY = "${AWS_SECRET_ACCESS_KEY}"
+                        env.AWS_REGION = 'us-east-1' // Specify your AWS region
+                    }
+                }
+            }
+        }
+
+        stage('Get Load Balancer DNS') {
+            steps {
+                script {
+                    // Get the load balancer DNS using the AWS CLI
+                    def output = sh(script: "aws elbv2 describe-load-balancers --names alb-ingress-noa-itay --query 'LoadBalancers[0].DNSName' --output text", returnStdout: true).trim()
+                    env.LOAD_BALANCER_DNS = output
+                    echo "Load Balancer DNS: ${env.LOAD_BALANCER_DNS}"
+                }
+            }
+        }
+
+        stage('Update DNS Records') {
+            steps {
+                dir('CA') {
+                  sh 'bash ./dns_update.sh'}
+            }
+        }
+    }
+}

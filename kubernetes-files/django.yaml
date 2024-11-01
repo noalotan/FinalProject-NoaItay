@@ -1,0 +1,39 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: status-page
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: django
+  namespace: status-page
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: django
+  template:
+    metadata:
+      labels:
+        app: django
+    spec:
+      containers:
+      - name: django
+        image: itayshlanger/status-page
+        ports:
+        - containerPort: 8001
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: django-service
+  namespace: status-page
+spec:
+  selector:
+    app: django
+  ports:
+    - protocol: TCP
+      port: 8001
+      targetPort: 8001

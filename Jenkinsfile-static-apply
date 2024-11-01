@@ -1,0 +1,49 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Setup AWS Credentials') {
+            steps {
+                withCredentials([aws(credentialsId: 'aws credentials')]) {
+                    script {
+                        env.AWS_ACCESS_KEY_ID = "${AWS_ACCESS_KEY_ID}"
+                        env.AWS_SECRET_ACCESS_KEY = "${AWS_SECRET_ACCESS_KEY}"
+                    }
+                }
+            }
+        }
+
+        stage('Terraform Init') {
+            steps {
+                dir('static') {
+                    sh 'terraform init'
+                }
+            }
+        }
+
+        stage('Terraform Plan') {
+            steps {
+                dir('static') {
+                    sh 'terraform plan'
+                }
+            }
+        }
+
+        stage('Terraform Apply') {
+            steps {
+                dir('static') {
+                    sh 'terraform apply -auto-approve'
+                }
+            }
+        }
+}
+
+    post {
+        success {
+            echo 'Terraform apply succeeded!'
+        }
+        failure {
+            echo 'Terraform apply failed.'
+        }
+    }
+}

@@ -1,0 +1,59 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Setup AWS Credentials') {
+            steps {
+                withCredentials([aws(credentialsId: 'aws credentials')]) {
+                    script {
+                        env.AWS_ACCESS_KEY_ID = "${AWS_ACCESS_KEY_ID}"
+                        env.AWS_SECRET_ACCESS_KEY = "${AWS_SECRET_ACCESS_KEY}"
+                    }
+                }
+            }
+        }
+
+        stage('Set kubectl with the right cluster') {
+            steps {
+                    sh 'aws eks update-kubeconfig --name cluster-noa-itay --region us-east-1'
+            }
+        }
+
+        stage('Deploying status-page application') {
+            steps {
+                dir('kubernetes-files') {
+                    sh 'kubectl apply -f django.yaml'
+                }
+            }
+        }
+
+        stage('Deploying nginx web interface') {
+            steps {
+                dir('kubernetes-files') {
+                    sh 'kubectl apply -f nginx.yaml'
+                }
+            }
+        } 
+        stage('Install Prometheus Helm Chart') {
+            steps {
+                script {
+                    sh '''
+                        helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+                        helm repo add stable https://charts.helm.sh/stable
+                        helm repo update
+                        helm install prometheus prometheus-community/kube-prometheus-stack -n status-page
+                    '''
+                }
+            }
+        }
+}
+
+    post {
+        success {
+            echo 'Deployment succeeded!'
+        }
+        failure {
+            echo 'Deployment failed.'
+        }
+    }
+}
