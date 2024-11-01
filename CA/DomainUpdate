@@ -27,7 +27,7 @@ pipeline {
 
         stage('Update DNS Records') {
             steps {
-                script {
+                dir('CA') {
                     // Ensure to set the correct path to your script
                     sh 'dns_update.sh'
                 }
