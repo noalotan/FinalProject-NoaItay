@@ -2,7 +2,7 @@ pipeline {
     agent any 
 
     environment {
-        CLUSTER_NAME = 'cluster-noa-itay'
+        CLUSTER_NAME = 'cluster-noa-itay-Dev'
         REGION_NAME = 'us-east-1'
         POLICY_ARN = 'arn:aws:iam::992382545251:policy/AWSLoadBalancerControllerIAMPolicy'
     }
@@ -49,7 +49,7 @@ pipeline {
                           --region=${REGION_NAME} \\
                           --namespace=kube-system \\
                           --name=aws-load-balancer-controller \\
-                          --role-name AmazonEKSLoadBalancerControllerRole-noa-itay \\
+                          --role-name AmazonEKSLoadBalancerControllerRole-noa-itay-Dev \\
                           --attach-policy-arn=${POLICY_ARN} \\
                           --approve
                         """
