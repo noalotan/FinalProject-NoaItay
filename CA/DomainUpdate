@@ -2,48 +2,30 @@ pipeline {
     agent any
 
     environment {
-        GODADDY_KEY = 'h1okCf5NCjpb_G7fc2KGSt1oKUxAfG5x48d' // Your GoDaddy API key
-        GODADDY_SECRET = 'HZcaigcV5VqZx3idQNdFUp' // Your GoDaddy API secret
-        DOMAIN = 'itay-noa.online'
-        AWS_LB_DNS = 'alb-ingress-noa-itay-1726286553.us-east-1.elb.amazonaws.com' // Replace with your actual AWS Load Balancer DNS
+        AWS_ACCESS_KEY_ID = credentials('aws-access-key-id') // Add your AWS access key ID credential
+        AWS_SECRET_ACCESS_KEY = credentials('aws-secret-access-key') // Add your AWS secret access key credential
+        AWS_REGION = 'your-aws-region' // Specify your AWS region
     }
 
     stages {
-        stage('Update DNS Records') {
+        stage('Get Load Balancer DNS') {
             steps {
                 script {
-                    // Define the subdomains
-                    def records = [
-                        [subdomain: 'statuspage'],
-                        [subdomain: 'grafana']
-                    ]
-
-                    records.each { record ->
-                        def subdomain = record.subdomain
-
-                        // Construct the API request
-                        def url = "https://api.godaddy.com/v1/domains/${DOMAIN}/records/CNAME/${subdomain}"
-                        def requestBody = "[{\"data\": \"${AWS_LB_DNS}\", \"ttl\": 600}]"
-
-                        // Make the API call to update DNS records
-                        def response = sh(script: """
-                            curl -X PUT -H "Authorization: sso-key \${GODADDY_KEY}:\${GODADDY_SECRET}" \
-                            -H "Content-Type: application/json" \
-                            -d '${requestBody}' \
-                            '${url}'
-                        """, returnStdout: true).trim()
-
-                        // Print the response for debugging
-                        echo "Updated DNS record for ${subdomain}: ${response}"
-                    }
+                    // Get the load balancer DNS using the AWS CLI
+                    def output = sh(script: "aws elbv2 describe-load-balancers --names your-load-balancer-name --query 'LoadBalancers[0].DNSName' --output text", returnStdout: true).trim()
+                    env.LOAD_BALANCER_DNS = output
+                    echo "Load Balancer DNS: ${env.LOAD_BALANCER_DNS}"
                 }
             }
         }
-    }
 
-    post {
-        always {
-            echo 'DNS records update process finished.'
+        stage('Update DNS Records') {
+            steps {
+                script {
+                    // Ensure to set the correct path to your script
+                    sh 'bash path/to/your/script.sh'
+                }
+            }
         }
     }
 }
