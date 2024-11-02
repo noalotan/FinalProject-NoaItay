@@ -51,7 +51,7 @@ variable "public_subnets" {
 
 variable "db_name" {
   description = "The name of the PostgreSQL database instance"
-  default     = "itayandnoa"
+  default     = "itayandnoa-prod"
 }
 
 variable "db_user" {
@@ -66,7 +66,7 @@ variable "db_password" {
 
 variable "db_subnet_group_name" {
   description = "The name of the DB subnet group"
-  default     = "noa-itay-db-subnet-group"
+  default     = "noa-itay-db-subnet-group-prod"
 }
 
 
@@ -75,10 +75,10 @@ variable "db_subnet_group_name" {
 
 variable "redis_replication_group_id" {
   description = "The ID of the ElastiCache Redis cluster"
-  default     = "noa-itay-redis-cache"
+  default     = "noa-itay-redis-cache-prod"
 }
 
 variable "redis_subnet_group_name" {
   description = "The name of the ElastiCache subnet group"
-  default     = "noa-itay-redis-subnet-group"
+  default     = "noa-itay-redis-subnet-group-prod"
 }
