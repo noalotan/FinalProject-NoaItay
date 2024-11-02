@@ -8,7 +8,7 @@ resource "aws_route53_zone" "my_zone" {
 
 # Fetch the existing load balancer
 data "aws_lb" "my_load_balancer" {
-  name = "alb-ingress-noa-itay-prod"  
+  name = "alb-ingress-noa-itay-dev"  
 }
 
 resource "aws_route53_record" "cname_statuspage" {
