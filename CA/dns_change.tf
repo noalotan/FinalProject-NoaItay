@@ -1,6 +1,5 @@
 provider "aws" {
-  region = "us-east-1"  # Change to your desired region
-}
+  region = "us-east-1"
 
 resource "aws_route53_zone" "my_zone" {
   name = "itay-noa.online"
