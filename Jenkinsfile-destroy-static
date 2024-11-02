@@ -15,7 +15,7 @@ pipeline {
 
         stage('Terraform Init') {
             steps {
-                dir('/var/lib/jenkins/workspace/static-apply/static') {
+                dir('/var/lib/jenkins/workspace/Prod-Architecture-apply/static') {
                     sh 'terraform init'
                 }
             }
@@ -23,22 +23,19 @@ pipeline {
 
         stage('Terraform Destroy') {
             steps {
-                dir('/var/lib/jenkins/workspace/static-apply/static') {
+                dir('/var/lib/jenkins/workspace/Prod-Architecture-apply/static') {
                     sh 'terraform destroy -auto-approve'
                 }
             }
         }
         stage('Cleaning up') {
             steps {
-                sh 'rm -rf /var/lib/jenkins/workspace/static-apply* /var/lib/jenkins/workspace/terraform-static-workspace/*'
+                sh 'rm -rf /var/lib/jenkins/workspace/Prod-Architecture-apply* /var/lib/jenkins/workspace/terraform-static-workspace/*'
             }
         }
     }    
 
     post {
-        always {
-            echo 'Cleaning up'
-        }
         success {
             echo 'Terraform destroy succeeded!'
         }
