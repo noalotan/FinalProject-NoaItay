@@ -1,13 +1,106 @@
-stage('Architecture Apply') {
-    steps {
-        script {
-            setGitHubPullRequestStatus state: 'pending', context: 'Architecture Apply'
-            try {
-                build job: 'Dev-Architecture-apply'
-                setGitHubPullRequestStatus state: 'success', context: 'Architecture Apply'
-            } catch (Exception e) {
-                setGitHubPullRequestStatus state: 'failure', context: 'Architecture Apply'
-                throw e
+pipeline {
+    agent any
+    stages {
+        stage('Architecture Apply') {
+            steps {
+                script {
+                    githubStatus context: 'Architecture Apply', state: 'PENDING'
+                    setGitHubPullRequestStatus state: 'pending', context: 'Architecture Apply'
+                    try {
+                        build job: 'Dev-Architecture-apply'
+                        githubStatus context: 'Architecture Apply', state: 'SUCCESS'
+                        setGitHubPullRequestStatus state: 'success', context: 'Architecture Apply'
+                    } catch (Exception e) {
+                        githubStatus context: 'Architecture Apply', state: 'FAILURE'
+                        setGitHubPullRequestStatus state: 'failure', context: 'Architecture Apply'
+                        throw e
+                    }
+                }
+            }
+        }
+        stage('Image Build') {
+            steps {
+                script {
+                    githubStatus context: 'Image Build', state: 'PENDING'
+                    setGitHubPullRequestStatus state: 'pending', context: 'Image Build'
+                    try {
+                        build job: 'Dev-Update-status-page-image'
+                        githubStatus context: 'Image Build', state: 'SUCCESS'
+                        setGitHubPullRequestStatus state: 'success', context: 'Image Build'
+                    } catch (Exception e) {
+                        githubStatus context: 'Image Build', state: 'FAILURE'
+                        setGitHubPullRequestStatus state: 'failure', context: 'Image Build'
+                        throw e
+                    }
+                }
+            }
+        }
+        stage('Image Test') {
+            steps {
+                script {
+                    githubStatus context: 'Image Test', state: 'PENDING'
+                    setGitHubPullRequestStatus state: 'pending', context: 'Image Test'
+                    try {
+                        build job: 'Dev-app-syntax-test'
+                        githubStatus context: 'Image Test', state: 'SUCCESS'
+                        setGitHubPullRequestStatus state: 'success', context: 'Image Test'
+                    } catch (Exception e) {
+                        githubStatus context: 'Image Test', state: 'FAILURE'
+                        setGitHubPullRequestStatus state: 'failure', context: 'Image Test'
+                        throw e
+                    }
+                }
+            }
+        }
+        stage('Deploy YMLs') {
+            steps {
+                script {
+                    githubStatus context: 'Deploy YMLs', state: 'PENDING'
+                    setGitHubPullRequestStatus state: 'pending', context: 'Deploy YMLs'
+                    try {
+                        build job: 'Dev-Application-deploy'
+                        githubStatus context: 'Deploy YMLs', state: 'SUCCESS'
+                        setGitHubPullRequestStatus state: 'success', context: 'Deploy YMLs'
+                    } catch (Exception e) {
+                        githubStatus context: 'Deploy YMLs', state: 'FAILURE'
+                        setGitHubPullRequestStatus state: 'failure', context: 'Deploy YMLs'
+                        throw e
+                    }
+                }
+            }
+        }
+        stage('ALB Apply') {
+            steps {
+                script {
+                    githubStatus context: 'ALB Apply', state: 'PENDING'
+                    setGitHubPullRequestStatus state: 'pending', context: 'ALB Apply'
+                    try {
+                        build job: 'Dev-Alb-deploy'
+                        githubStatus context: 'ALB Apply', state: 'SUCCESS'
+                        setGitHubPullRequestStatus state: 'success', context: 'ALB Apply'
+                    } catch (Exception e) {
+                        githubStatus context: 'ALB Apply', state: 'FAILURE'
+                        setGitHubPullRequestStatus state: 'failure', context: 'ALB Apply'
+                        throw e
+                    }
+                }
+            }
+        }
+        stage('Tests') {
+            steps {
+                script {
+                    githubStatus context: 'Tests', state: 'PENDING'
+                    setGitHubPullRequestStatus state: 'pending', context: 'Tests'
+                    try {
+                        build job: 'Dev-CI-Tests'
+                        githubStatus context: 'Tests', state: 'SUCCESS'
+                        setGitHubPullRequestStatus state: 'success', context: 'Tests'
+                    } catch (Exception e) {
+                        githubStatus context: 'Tests', state: 'FAILURE'
+                        setGitHubPullRequestStatus state: 'failure', context: 'Tests'
+                        throw e
+                    }
+                }
             }
         }
     }
