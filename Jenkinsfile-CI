@@ -15,21 +15,7 @@ pipeline {
                 }
             }
         }
-        stage('Image Build') {
-            steps {
-                script {
-                    status(context: 'Image Build', state: 'PENDING')
-                    try {
-                        build job: 'Dev-Update-status-page-image'
-                        status(context: 'Image Build', state: 'SUCCESS')
-                    } catch (Exception e) {
-                        status(context: 'Image Build', state: 'FAILURE')
-                        throw e
-                    }
-                }
-            }
-        }
-        stage('Image Test') {
+        stage('Image Test') { // Moved this stage before Image Build
             steps {
                 script {
                     status(context: 'Image Test', state: 'PENDING')
@@ -38,6 +24,20 @@ pipeline {
                         status(context: 'Image Test', state: 'SUCCESS')
                     } catch (Exception e) {
                         status(context: 'Image Test', state: 'FAILURE')
+                        throw e
+                    }
+                }
+            }
+        }
+        stage('Image Build') { // This stage is now after Image Test
+            steps {
+                script {
+                    status(context: 'Image Build', state: 'PENDING')
+                    try {
+                        build job: 'Dev-Update-status-page-image'
+                        status(context: 'Image Build', state: 'SUCCESS')
+                    } catch (Exception e) {
+                        status(context: 'Image Build', state: 'FAILURE')
                         throw e
                     }
                 }
