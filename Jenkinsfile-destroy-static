@@ -12,35 +12,58 @@ pipeline {
                 }
             }
         }
-
-        stage('Terraform Init') {
+        stage('Checkout') {
             steps {
-                dir('/var/lib/jenkins/workspace/Dev-Architecture-apply/static') {
-                    sh 'terraform init'
+                script {
+                    checkout scm
                 }
             }
         }
-
-        stage('Terraform Destroy') {
+        stage('Execute Job') {
             steps {
-                dir('/var/lib/jenkins/workspace/Dev-Architecture-apply/static') {
-                    sh 'terraform destroy -auto-approve'
+                script {
+                    def jobs = [
+                        ['name': 'Architecture Apply', 'job': 'Dev-Architecture-apply'],
+                        ['name': 'Image Test', 'job': 'Dev-app-syntax-test'],
+                        ['name': 'Image Build', 'job': 'Dev-Update-status-page-image'],
+                        ['name': 'Deploy YMLs', 'job': 'Dev-Application-deploy'],
+                        ['name': 'ALB Apply', 'job': 'Dev-Alb-deploy'],
+                        ['name': 'Tests', 'job': 'Dev-CI-Tests'],
+                        ['name': 'ALB Destroy', 'job': 'Dev-Alb-destroy'],
+                        ['name': 'Architecture Destroy', 'job': 'Dev-Architecture-destroy']
+                    ]
+
+                    for (def entry : jobs) {
+                        def context = entry.name
+                        githubNotify context: context, 
+                                     description: "Starting ${context}", 
+                                     state: 'PENDING', 
+                                     credentialsId: 'aws credentials',
+                                     repo: 'noalotan/FinalProject-NoaItay', 
+                                     account: 'noalotan', 
+                                     sha: env.GIT_COMMIT
+                        try {
+                            build job: entry.job
+                            githubNotify context: context, 
+                                         description: "${context} succeeded", 
+                                         state: 'SUCCESS', 
+                                         credentialsId: 'aws credentials',
+                                         repo: 'noalotan/FinalProject-NoaItay', 
+                                         account: 'noalotan', 
+                                         sha: env.GIT_COMMIT
+                        } catch (Exception e) {
+                            githubNotify context: context, 
+                                         description: "${context} failed", 
+                                         state: 'FAILURE', 
+                                         credentialsId: 'aws credentials',
+                                         repo: 'noalotan/FinalProject-NoaItay', 
+                                         account: 'noalotan', 
+                                         sha: env.GIT_COMMIT
+                            throw e
+                        }
+                    }
                 }
             }
-        }
-        stage('Cleaning up') {
-            steps {
-                sh 'rm -rf /var/lib/jenkins/workspace/Dev-Architecture-apply* /var/lib/jenkins/workspace/terraform-static-workspace/*'
-            }
-        }
-    }    
-
-    post {
-        success {
-            echo 'Terraform destroy succeeded!'
-        }
-        failure {
-            echo 'Terraform destroy failed.'
         }
     }
 }
