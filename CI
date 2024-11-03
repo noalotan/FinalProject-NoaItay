@@ -11,7 +11,7 @@ pipeline {
             steps {
                 dir('opt/status-page') {
                     // Run Django tests
-                    sh 'python manage.py test'
+                    sh 'python3 manage.py test'
                 }
             }
         }
