@@ -9,7 +9,7 @@ pipeline {
         }
         stage('Run Tests') {  // Third stage: Testing
             steps {
-                dir('opt/status-page') {
+                dir('opt/status-page/statuspage') {
                     // Run Django tests
                     sh 'python3 manage.py test'
                 }
