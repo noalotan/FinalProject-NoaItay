@@ -4,12 +4,12 @@ pipeline {
         stage('Architecture Apply') {
             steps {
                 script {
-                    githubNotify context: 'Architecture Apply', status: 'PENDING'
+                    githubStatus context: 'Architecture Apply', state: 'PENDING'
                     try {
                         build job: 'Dev-Architecture-apply'
-                        githubNotify context: 'Architecture Apply', status: 'SUCCESS'
+                        githubStatus context: 'Architecture Apply', state: 'SUCCESS'
                     } catch (Exception e) {
-                        githubNotify context: 'Architecture Apply', status: 'FAILURE'
+                        githubStatus context: 'Architecture Apply', state: 'FAILURE'
                         throw e
                     }
                 }
@@ -18,12 +18,12 @@ pipeline {
         stage('Image Build') {
             steps {
                 script {
-                    githubNotify context: 'Image Build', status: 'PENDING'
+                    githubStatus context: 'Image Build', state: 'PENDING'
                     try {
                         build job: 'Dev-Update-status-page-image'
-                        githubNotify context: 'Image Build', status: 'SUCCESS'
+                        githubStatus context: 'Image Build', state: 'SUCCESS'
                     } catch (Exception e) {
-                        githubNotify context: 'Image Build', status: 'FAILURE'
+                        githubStatus context: 'Image Build', state: 'FAILURE'
                         throw e
                     }
                 }
@@ -32,12 +32,12 @@ pipeline {
         stage('Image Test') {
             steps {
                 script {
-                    githubNotify context: 'Image Test', status: 'PENDING'
+                    githubStatus context: 'Image Test', state: 'PENDING'
                     try {
                         build job: 'Dev-app-syntax-test'
-                        githubNotify context: 'Image Test', status: 'SUCCESS'
+                        githubStatus context: 'Image Test', state: 'SUCCESS'
                     } catch (Exception e) {
-                        githubNotify context: 'Image Test', status: 'FAILURE'
+                        githubStatus context: 'Image Test', state: 'FAILURE'
                         throw e
                     }
                 }
@@ -46,12 +46,12 @@ pipeline {
         stage('Deploy YMLs') {
             steps {
                 script {
-                    githubNotify context: 'Deploy YMLs', status: 'PENDING'
+                    githubStatus context: 'Deploy YMLs', state: 'PENDING'
                     try {
                         build job: 'Dev-Application-deploy'
-                        githubNotify context: 'Deploy YMLs', status: 'SUCCESS'
+                        githubStatus context: 'Deploy YMLs', state: 'SUCCESS'
                     } catch (Exception e) {
-                        githubNotify context: 'Deploy YMLs', status: 'FAILURE'
+                        githubStatus context: 'Deploy YMLs', state: 'FAILURE'
                         throw e
                     }
                 }
@@ -60,12 +60,12 @@ pipeline {
         stage('ALB Apply') {
             steps {
                 script {
-                    githubNotify context: 'ALB Apply', status: 'PENDING'
+                    githubStatus context: 'ALB Apply', state: 'PENDING'
                     try {
                         build job: 'Dev-Alb-deploy'
-                        githubNotify context: 'ALB Apply', status: 'SUCCESS'
+                        githubStatus context: 'ALB Apply', state: 'SUCCESS'
                     } catch (Exception e) {
-                        githubNotify context: 'ALB Apply', status: 'FAILURE'
+                        githubStatus context: 'ALB Apply', state: 'FAILURE'
                         throw e
                     }
                 }
@@ -74,12 +74,12 @@ pipeline {
         stage('Tests') {
             steps {
                 script {
-                    githubNotify context: 'Tests', status: 'PENDING'
+                    githubStatus context: 'Tests', state: 'PENDING'
                     try {
                         build job: 'Dev-CI-Tests'
-                        githubNotify context: 'Tests', status: 'SUCCESS'
+                        githubStatus context: 'Tests', state: 'SUCCESS'
                     } catch (Exception e) {
-                        githubNotify context: 'Tests', status: 'FAILURE'
+                        githubStatus context: 'Tests', state: 'FAILURE'
                         throw e
                     }
                 }
