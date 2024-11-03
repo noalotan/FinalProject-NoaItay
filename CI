@@ -1,0 +1,42 @@
+pipeline {
+    agent any  // This defines where the pipeline will run; "any" lets Jenkins decide.
+
+    stages {  // Stages are the main steps in the CI pipeline.
+        stage('Install Dependencies') {  // First stage: Install Python packages
+            steps {
+                // Install necessary Python packages
+                sh 'pip install -r requirements.txt'
+                sh 'pip install flake8 black'
+            }
+        }
+
+        stage('Lint Code') {  // Second stage: Linting
+            steps {
+                // Run flake8 to check for code style issues
+                sh 'flake8 .'
+                
+                // Run black in check-only mode to verify code formatting
+                sh 'black --check .'
+            }
+        }
+
+        stage('Run Tests') {  // Third stage: Testing
+            steps {
+                // Run Django tests
+                sh 'python manage.py test'
+            }
+        }
+    }
+
+    post {
+        always {
+            echo 'Pipeline completed.'
+        }
+        success {
+            echo 'All stages passed successfully!'
+        }
+        failure {
+            echo 'One or more stages failed.'
+        }
+    }
+}
