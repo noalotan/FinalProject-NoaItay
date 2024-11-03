@@ -1,88 +1,13 @@
-pipeline {
-    agent any
-    stages {
-        stage('Architecture Apply') {
-            steps {
-                script {
-                    githubStatus context: 'Architecture Apply', state: 'PENDING'
-                    try {
-                        build job: 'Dev-Architecture-apply'
-                        githubStatus context: 'Architecture Apply', state: 'SUCCESS'
-                    } catch (Exception e) {
-                        githubStatus context: 'Architecture Apply', state: 'FAILURE'
-                        throw e
-                    }
-                }
-            }
-        }
-        stage('Image Build') {
-            steps {
-                script {
-                    githubStatus context: 'Image Build', state: 'PENDING'
-                    try {
-                        build job: 'Dev-Update-status-page-image'
-                        githubStatus context: 'Image Build', state: 'SUCCESS'
-                    } catch (Exception e) {
-                        githubStatus context: 'Image Build', state: 'FAILURE'
-                        throw e
-                    }
-                }
-            }
-        }
-        stage('Image Test') {
-            steps {
-                script {
-                    githubStatus context: 'Image Test', state: 'PENDING'
-                    try {
-                        build job: 'Dev-app-syntax-test'
-                        githubStatus context: 'Image Test', state: 'SUCCESS'
-                    } catch (Exception e) {
-                        githubStatus context: 'Image Test', state: 'FAILURE'
-                        throw e
-                    }
-                }
-            }
-        }
-        stage('Deploy YMLs') {
-            steps {
-                script {
-                    githubStatus context: 'Deploy YMLs', state: 'PENDING'
-                    try {
-                        build job: 'Dev-Application-deploy'
-                        githubStatus context: 'Deploy YMLs', state: 'SUCCESS'
-                    } catch (Exception e) {
-                        githubStatus context: 'Deploy YMLs', state: 'FAILURE'
-                        throw e
-                    }
-                }
-            }
-        }
-        stage('ALB Apply') {
-            steps {
-                script {
-                    githubStatus context: 'ALB Apply', state: 'PENDING'
-                    try {
-                        build job: 'Dev-Alb-deploy'
-                        githubStatus context: 'ALB Apply', state: 'SUCCESS'
-                    } catch (Exception e) {
-                        githubStatus context: 'ALB Apply', state: 'FAILURE'
-                        throw e
-                    }
-                }
-            }
-        }
-        stage('Tests') {
-            steps {
-                script {
-                    githubStatus context: 'Tests', state: 'PENDING'
-                    try {
-                        build job: 'Dev-CI-Tests'
-                        githubStatus context: 'Tests', state: 'SUCCESS'
-                    } catch (Exception e) {
-                        githubStatus context: 'Tests', state: 'FAILURE'
-                        throw e
-                    }
-                }
+stage('Architecture Apply') {
+    steps {
+        script {
+            setGitHubPullRequestStatus state: 'pending', context: 'Architecture Apply'
+            try {
+                build job: 'Dev-Architecture-apply'
+                setGitHubPullRequestStatus state: 'success', context: 'Architecture Apply'
+            } catch (Exception e) {
+                setGitHubPullRequestStatus state: 'failure', context: 'Architecture Apply'
+                throw e
             }
         }
     }
