@@ -21,13 +21,14 @@ pipeline {
         }
         stage('Run Tests') {  // Third stage: Testing
             steps {
-                dir('opt/status-page')
+                dir('opt/status-page') {
                     // Run Django tests
                     sh 'python manage.py test'
                 }
             }
         }
     }
+    post {  // Post-actions to handle success or failure
         success {
             echo 'All stages passed successfully!'
         }
