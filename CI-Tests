@@ -15,8 +15,8 @@ pipeline {
                     // Lint with flake8
                     sh '''
                     echo "Linting with flake8..."
-                    flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-                    flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+                    /var/lib/jenkins/.local/lib/python3.10/site-packages/flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+                    /var/lib/jenkins/.local/lib/python3.10/site-packages/flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
                     '''
                 }
             }
