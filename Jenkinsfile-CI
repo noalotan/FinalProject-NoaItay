@@ -1,72 +1,15 @@
 pipeline {
     agent any
     stages {
-        stage('Checkout') {
-            steps {
-                script {
-                    checkout scm
-                }
-            }
-        }
         stage('Architecture Apply') {
             steps {
                 script {
-                    githubNotify context: 'Architecture Apply', 
-                                 description: 'Starting Architecture Apply', 
-                                 state: 'PENDING', 
-                                 credentialsId: 'aws credentials',
-                                 repo: 'noalotan/FinalProject-NoaItay', 
-                                 account: 'noalotan', 
-                                 sha: env.GIT_COMMIT
+                    status(context: 'Architecture Apply', state: 'PENDING')
                     try {
                         build job: 'Dev-Architecture-apply'
-                        githubNotify context: 'Architecture Apply', 
-                                     description: 'Architecture Apply succeeded', 
-                                     state: 'SUCCESS', 
-                                     credentialsId: 'aws credentials',
-                                     repo: 'noalotan/FinalProject-NoaItay', 
-                                     account: 'noalotan', 
-                                     sha: env.GIT_COMMIT
+                        status(context: 'Architecture Apply', state: 'SUCCESS')
                     } catch (Exception e) {
-                        githubNotify context: 'Architecture Apply', 
-                                     description: 'Architecture Apply failed', 
-                                     state: 'FAILURE', 
-                                     credentialsId: 'aws credentials',
-                                     repo: 'noalotan/FinalProject-NoaItay', 
-                                     account: 'noalotan', 
-                                     sha: env.GIT_COMMIT
-                        throw e
-                    }
-                }
-            }
-        }
-        stage('Image Test') {
-            steps {
-                script {
-                    githubNotify context: 'Image Test', 
-                                 description: 'Starting Image Test', 
-                                 state: 'PENDING', 
-                                 credentialsId: 'aws credentials',
-                                 repo: 'noalotan/FinalProject-NoaItay', 
-                                 account: 'noalotan', 
-                                 sha: env.GIT_COMMIT
-                    try {
-                        build job: 'Dev-app-syntax-test'
-                        githubNotify context: 'Image Test', 
-                                     description: 'Image Test succeeded', 
-                                     state: 'SUCCESS', 
-                                     credentialsId: 'aws credentials',
-                                     repo: 'noalotan/FinalProject-NoaItay', 
-                                     account: 'noalotan', 
-                                     sha: env.GIT_COMMIT
-                    } catch (Exception e) {
-                        githubNotify context: 'Image Test', 
-                                     description: 'Image Test failed', 
-                                     state: 'FAILURE', 
-                                     credentialsId: 'aws credentials',
-                                     repo: 'noalotan/FinalProject-NoaItay', 
-                                     account: 'noalotan', 
-                                     sha: env.GIT_COMMIT
+                        status(context: 'Architecture Apply', state: 'FAILURE')
                         throw e
                     }
                 }
@@ -75,30 +18,26 @@ pipeline {
         stage('Image Build') {
             steps {
                 script {
-                    githubNotify context: 'Image Build', 
-                                 description: 'Starting Image Build', 
-                                 state: 'PENDING', 
-                                 credentialsId: 'aws credentials',
-                                 repo: 'noalotan/FinalProject-NoaItay', 
-                                 account: 'noalotan', 
-                                 sha: env.GIT_COMMIT
+                    status(context: 'Image Build', state: 'PENDING')
                     try {
                         build job: 'Dev-Update-status-page-image'
-                        githubNotify context: 'Image Build', 
-                                     description: 'Image Build succeeded', 
-                                     state: 'SUCCESS', 
-                                     credentialsId: 'aws credentials',
-                                     repo: 'noalotan/FinalProject-NoaItay', 
-                                     account: 'noalotan', 
-                                     sha: env.GIT_COMMIT
+                        status(context: 'Image Build', state: 'SUCCESS')
                     } catch (Exception e) {
-                        githubNotify context: 'Image Build', 
-                                     description: 'Image Build failed', 
-                                     state: 'FAILURE', 
-                                     credentialsId: 'aws credentials',
-                                     repo: 'noalotan/FinalProject-NoaItay', 
-                                     account: 'noalotan', 
-                                     sha: env.GIT_COMMIT
+                        status(context: 'Image Build', state: 'FAILURE')
+                        throw e
+                    }
+                }
+            }
+        }
+        stage('Image Test') {
+            steps {
+                script {
+                    status(context: 'Image Test', state: 'PENDING')
+                    try {
+                        build job: 'Dev-app-syntax-test'
+                        status(context: 'Image Test', state: 'SUCCESS')
+                    } catch (Exception e) {
+                        status(context: 'Image Test', state: 'FAILURE')
                         throw e
                     }
                 }
@@ -107,30 +46,12 @@ pipeline {
         stage('Deploy YMLs') {
             steps {
                 script {
-                    githubNotify context: 'Deploy YMLs', 
-                                 description: 'Starting Deploy YMLs', 
-                                 state: 'PENDING', 
-                                 credentialsId: 'aws credentials',
-                                 repo: 'noalotan/FinalProject-NoaItay', 
-                                 account: 'noalotan', 
-                                 sha: env.GIT_COMMIT
+                    status(context: 'Deploy YMLs', state: 'PENDING')
                     try {
                         build job: 'Dev-Application-deploy'
-                        githubNotify context: 'Deploy YMLs', 
-                                     description: 'Deploy YMLs succeeded', 
-                                     state: 'SUCCESS', 
-                                     credentialsId: 'aws credentials',
-                                     repo: 'noalotan/FinalProject-NoaItay', 
-                                     account: 'noalotan', 
-                                     sha: env.GIT_COMMIT
+                        status(context: 'Deploy YMLs', state: 'SUCCESS')
                     } catch (Exception e) {
-                        githubNotify context: 'Deploy YMLs', 
-                                     description: 'Deploy YMLs failed', 
-                                     state: 'FAILURE', 
-                                     credentialsId: 'aws credentials',
-                                     repo: 'noalotan/FinalProject-NoaItay', 
-                                     account: 'noalotan', 
-                                     sha: env.GIT_COMMIT
+                        status(context: 'Deploy YMLs', state: 'FAILURE')
                         throw e
                     }
                 }
@@ -139,30 +60,12 @@ pipeline {
         stage('ALB Apply') {
             steps {
                 script {
-                    githubNotify context: 'ALB Apply', 
-                                 description: 'Starting ALB Apply', 
-                                 state: 'PENDING', 
-                                 credentialsId: 'aws credentials',
-                                 repo: 'noalotan/FinalProject-NoaItay', 
-                                 account: 'noalotan', 
-                                 sha: env.GIT_COMMIT
+                    status(context: 'ALB Apply', state: 'PENDING')
                     try {
                         build job: 'Dev-Alb-deploy'
-                        githubNotify context: 'ALB Apply', 
-                                     description: 'ALB Apply succeeded', 
-                                     state: 'SUCCESS', 
-                                     credentialsId: 'aws credentials',
-                                     repo: 'noalotan/FinalProject-NoaItay', 
-                                     account: 'noalotan', 
-                                     sha: env.GIT_COMMIT
+                        status(context: 'ALB Apply', state: 'SUCCESS')
                     } catch (Exception e) {
-                        githubNotify context: 'ALB Apply', 
-                                     description: 'ALB Apply failed', 
-                                     state: 'FAILURE', 
-                                     credentialsId: 'aws credentials',
-                                     repo: 'noalotan/FinalProject-NoaItay', 
-                                     account: 'noalotan', 
-                                     sha: env.GIT_COMMIT
+                        status(context: 'ALB Apply', state: 'FAILURE')
                         throw e
                     }
                 }
@@ -171,30 +74,12 @@ pipeline {
         stage('Tests') {
             steps {
                 script {
-                    githubNotify context: 'Tests', 
-                                 description: 'Starting Tests', 
-                                 state: 'PENDING', 
-                                 credentialsId: 'aws credentials',
-                                 repo: 'noalotan/FinalProject-NoaItay', 
-                                 account: 'noalotan', 
-                                 sha: env.GIT_COMMIT
+                    status(context: 'Tests', state: 'PENDING')
                     try {
                         build job: 'Dev-CI-Tests'
-                        githubNotify context: 'Tests', 
-                                     description: 'Tests succeeded', 
-                                     state: 'SUCCESS', 
-                                     credentialsId: 'aws credentials',
-                                     repo: 'noalotan/FinalProject-NoaItay', 
-                                     account: 'noalotan', 
-                                     sha: env.GIT_COMMIT
+                        status(context: 'Tests', state: 'SUCCESS')
                     } catch (Exception e) {
-                        githubNotify context: 'Tests', 
-                                     description: 'Tests failed', 
-                                     state: 'FAILURE', 
-                                     credentialsId: 'aws credentials',
-                                     repo: 'noalotan/FinalProject-NoaItay', 
-                                     account: 'noalotan', 
-                                     sha: env.GIT_COMMIT
+                        status(context: 'Tests', state: 'FAILURE')
                         throw e
                     }
                 }
@@ -203,30 +88,12 @@ pipeline {
         stage('ALB Destroy') {
             steps {
                 script {
-                    githubNotify context: 'ALB Destroy', 
-                                 description: 'Starting ALB Destroy', 
-                                 state: 'PENDING', 
-                                 credentialsId: 'aws credentials',
-                                 repo: 'noalotan/FinalProject-NoaItay', 
-                                 account: 'noalotan', 
-                                 sha: env.GIT_COMMIT
+                    status(context: 'ALB Destroy', state: 'PENDING')
                     try {
                         build job: 'Dev-Alb-destroy'
-                        githubNotify context: 'ALB Destroy', 
-                                     description: 'ALB Destroy succeeded', 
-                                     state: 'SUCCESS', 
-                                     credentialsId: 'aws credentials',
-                                     repo: 'noalotan/FinalProject-NoaItay', 
-                                     account: 'noalotan', 
-                                     sha: env.GIT_COMMIT
+                        status(context: 'ALB Destroy', state: 'SUCCESS')
                     } catch (Exception e) {
-                        githubNotify context: 'ALB Destroy', 
-                                     description: 'ALB Destroy failed', 
-                                     state: 'FAILURE', 
-                                     credentialsId: 'aws credentials',
-                                     repo: 'noalotan/FinalProject-NoaItay', 
-                                     account: 'noalotan', 
-                                     sha: env.GIT_COMMIT
+                        status(context: 'ALB Destroy', state: 'FAILURE')
                         throw e
                     }
                 }
@@ -235,30 +102,12 @@ pipeline {
         stage('Architecture Destroy') {
             steps {
                 script {
-                    githubNotify context: 'Architecture Destroy', 
-                                 description: 'Starting Architecture Destroy', 
-                                 state: 'PENDING', 
-                                 credentialsId: 'aws credentials',
-                                 repo: 'noalotan/FinalProject-NoaItay', 
-                                 account: 'noalotan', 
-                                 sha: env.GIT_COMMIT
+                    status(context: 'Architecture Destroy', state: 'PENDING')
                     try {
                         build job: 'Dev-Architecture-destroy'
-                        githubNotify context: 'Architecture Destroy', 
-                                     description: 'Architecture Destroy succeeded', 
-                                     state: 'SUCCESS', 
-                                     credentialsId: 'aws credentials',
-                                     repo: 'noalotan/FinalProject-NoaItay', 
-                                     account: 'noalotan', 
-                                     sha: env.GIT_COMMIT
+                        status(context: 'Architecture Destroy', state: 'SUCCESS')
                     } catch (Exception e) {
-                        githubNotify context: 'Architecture Destroy', 
-                                     description: 'Architecture Destroy failed', 
-                                     state: 'FAILURE', 
-                                     credentialsId: 'aws credentials',
-                                     repo: 'noalotan/FinalProject-NoaItay', 
-                                     account: 'noalotan', 
-                                     sha: env.GIT_COMMIT
+                        status(context: 'Architecture Destroy', state: 'FAILURE')
                         throw e
                     }
                 }
