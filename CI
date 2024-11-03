@@ -12,7 +12,7 @@ pipeline {
             steps {
                 dir('opt/status-page') {
                     // Run flake8 to check for code style issues
-                    sh 'flake8 .'
+                    sh '/var/lib/jenkins/.local/bin/flake8 .'
                 
                     // Run black in check-only mode to verify code formatting
                     sh 'black --check .'
