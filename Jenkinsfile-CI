@@ -4,15 +4,12 @@ pipeline {
         stage('Architecture Apply') {
             steps {
                 script {
-                    githubStatus context: 'Architecture Apply', state: 'PENDING'
-                    setGitHubPullRequestStatus state: 'pending', context: 'Architecture Apply'
+                    status 'Architecture Apply', 'PENDING'
                     try {
                         build job: 'Dev-Architecture-apply'
-                        githubStatus context: 'Architecture Apply', state: 'SUCCESS'
-                        setGitHubPullRequestStatus state: 'success', context: 'Architecture Apply'
+                        status 'Architecture Apply', 'SUCCESS'
                     } catch (Exception e) {
-                        githubStatus context: 'Architecture Apply', state: 'FAILURE'
-                        setGitHubPullRequestStatus state: 'failure', context: 'Architecture Apply'
+                        status 'Architecture Apply', 'FAILURE'
                         throw e
                     }
                 }
@@ -21,15 +18,12 @@ pipeline {
         stage('Image Build') {
             steps {
                 script {
-                    githubStatus context: 'Image Build', state: 'PENDING'
-                    setGitHubPullRequestStatus state: 'pending', context: 'Image Build'
+                    status 'Image Build', 'PENDING'
                     try {
                         build job: 'Dev-Update-status-page-image'
-                        githubStatus context: 'Image Build', state: 'SUCCESS'
-                        setGitHubPullRequestStatus state: 'success', context: 'Image Build'
+                        status 'Image Build', 'SUCCESS'
                     } catch (Exception e) {
-                        githubStatus context: 'Image Build', state: 'FAILURE'
-                        setGitHubPullRequestStatus state: 'failure', context: 'Image Build'
+                        status 'Image Build', 'FAILURE'
                         throw e
                     }
                 }
@@ -38,15 +32,12 @@ pipeline {
         stage('Image Test') {
             steps {
                 script {
-                    githubStatus context: 'Image Test', state: 'PENDING'
-                    setGitHubPullRequestStatus state: 'pending', context: 'Image Test'
+                    status 'Image Test', 'PENDING'
                     try {
                         build job: 'Dev-app-syntax-test'
-                        githubStatus context: 'Image Test', state: 'SUCCESS'
-                        setGitHubPullRequestStatus state: 'success', context: 'Image Test'
+                        status 'Image Test', 'SUCCESS'
                     } catch (Exception e) {
-                        githubStatus context: 'Image Test', state: 'FAILURE'
-                        setGitHubPullRequestStatus state: 'failure', context: 'Image Test'
+                        status 'Image Test', 'FAILURE'
                         throw e
                     }
                 }
@@ -55,15 +46,12 @@ pipeline {
         stage('Deploy YMLs') {
             steps {
                 script {
-                    githubStatus context: 'Deploy YMLs', state: 'PENDING'
-                    setGitHubPullRequestStatus state: 'pending', context: 'Deploy YMLs'
+                    status 'Deploy YMLs', 'PENDING'
                     try {
                         build job: 'Dev-Application-deploy'
-                        githubStatus context: 'Deploy YMLs', state: 'SUCCESS'
-                        setGitHubPullRequestStatus state: 'success', context: 'Deploy YMLs'
+                        status 'Deploy YMLs', 'SUCCESS'
                     } catch (Exception e) {
-                        githubStatus context: 'Deploy YMLs', state: 'FAILURE'
-                        setGitHubPullRequestStatus state: 'failure', context: 'Deploy YMLs'
+                        status 'Deploy YMLs', 'FAILURE'
                         throw e
                     }
                 }
@@ -72,15 +60,12 @@ pipeline {
         stage('ALB Apply') {
             steps {
                 script {
-                    githubStatus context: 'ALB Apply', state: 'PENDING'
-                    setGitHubPullRequestStatus state: 'pending', context: 'ALB Apply'
+                    status 'ALB Apply', 'PENDING'
                     try {
                         build job: 'Dev-Alb-deploy'
-                        githubStatus context: 'ALB Apply', state: 'SUCCESS'
-                        setGitHubPullRequestStatus state: 'success', context: 'ALB Apply'
+                        status 'ALB Apply', 'SUCCESS'
                     } catch (Exception e) {
-                        githubStatus context: 'ALB Apply', state: 'FAILURE'
-                        setGitHubPullRequestStatus state: 'failure', context: 'ALB Apply'
+                        status 'ALB Apply', 'FAILURE'
                         throw e
                     }
                 }
@@ -89,15 +74,12 @@ pipeline {
         stage('Tests') {
             steps {
                 script {
-                    githubStatus context: 'Tests', state: 'PENDING'
-                    setGitHubPullRequestStatus state: 'pending', context: 'Tests'
+                    status 'Tests', 'PENDING'
                     try {
                         build job: 'Dev-CI-Tests'
-                        githubStatus context: 'Tests', state: 'SUCCESS'
-                        setGitHubPullRequestStatus state: 'success', context: 'Tests'
+                        status 'Tests', 'SUCCESS'
                     } catch (Exception e) {
-                        githubStatus context: 'Tests', state: 'FAILURE'
-                        setGitHubPullRequestStatus state: 'failure', context: 'Tests'
+                        status 'Tests', 'FAILURE'
                         throw e
                     }
                 }
