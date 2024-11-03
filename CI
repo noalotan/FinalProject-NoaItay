@@ -4,7 +4,7 @@ pipeline {
         stage('Install Dependencies') {  // First stage: Install Python packages
             steps {
                 // Install necessary Python packages
-                sh 'pip3 install -r requirements.txt'
+                sh 'pip3 install -r opt/status-page/requirements.txt'
                 sh 'pip3 install flake8 black'
             }
         }
