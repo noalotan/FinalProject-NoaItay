@@ -1,6 +1,15 @@
 pipeline {
     agent any
     stages {
+        stage('Check PR Target') {
+            steps {
+                script {
+                    if (env.CHANGE_TARGET != 'CI/CD Dev') {
+                        error("This job only runs for pull requests targeting the CI/CD Dev branch.")
+                    }
+                }
+            }
+        }
         stage('Architecture Apply') {
             steps {
                 script {
