@@ -10,24 +10,22 @@ pipeline {
         }
         stage('Lint Code') {  // Second stage: Linting
             steps {
-                // Run flake8 to check for code style issues
-                sh 'flake8 .'
+                dir('opt/status-page') {
+                    // Run flake8 to check for code style issues
+                    sh 'flake8 .'
                 
-                // Run black in check-only mode to verify code formatting
-                sh 'black --check .'
+                    // Run black in check-only mode to verify code formatting
+                    sh 'black --check .'
             }
         }
         stage('Run Tests') {  // Third stage: Testing
             steps {
-                // Run Django tests
-                sh 'python manage.py test'
+                dir('opt/status-page')
+                    // Run Django tests
+                    sh 'python manage.py test'
             }
         }
     }
-    post {
-        always {
-            echo 'Pipeline completed.'
-        }
         success {
             echo 'All stages passed successfully!'
         }
