@@ -90,7 +90,7 @@ pipeline {
             steps {
                 script {
                     echo 'Waiting for 30 seconds...'
-                    sleep(time: 30, unit: 'SECONDS') // Adjust time and unit as needed
+                    sleep(time: 30, unit: 'SECONDS') 
                 }
             }
         }
@@ -99,7 +99,7 @@ pipeline {
                 script {
                     echo "Applying ingress Class..."
                     sh """
-                    kubectl apply -f ingress/ingress-class.yaml
+                    kubectl apply -f ingress/ingress-class.yaml -v=6
                     """
                 }
             }
@@ -109,7 +109,7 @@ pipeline {
                 script {
                     echo "Applying ingress resources..."
                     sh """
-                    kubectl apply -f ingress/ingress.yaml
+                    kubectl apply -f ingress/ingress.yaml -v=6
                     """
                 }
             }
