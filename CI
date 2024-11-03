@@ -16,6 +16,7 @@ pipeline {
                 
                     // Run black in check-only mode to verify code formatting
                     sh 'black --check .'
+                }
             }
         }
         stage('Run Tests') {  // Third stage: Testing
@@ -23,6 +24,7 @@ pipeline {
                 dir('opt/status-page')
                     // Run Django tests
                     sh 'python manage.py test'
+                }
             }
         }
     }
