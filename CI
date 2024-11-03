@@ -12,7 +12,7 @@ pipeline {
             steps {
                 dir('opt/status-page') {
                     // Run black in check-only mode to verify code formatting
-                    sh 'black --check .'
+                    sh '/var/lib/jenkins/.local/bin/black --check .'
                 }
             }
         }
