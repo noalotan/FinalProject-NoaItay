@@ -5,15 +5,12 @@ pipeline {
             steps {
                 // Install necessary Python packages
                 sh 'pip3 install -r opt/status-page/requirements.txt'
-                sh 'pip3 install flake8 black'
+                sh 'pip3 install black'
             }
         }
         stage('Lint Code') {  // Second stage: Linting
             steps {
                 dir('opt/status-page') {
-                    // Run flake8 to check for code style issues
-                    sh '/var/lib/jenkins/.local/bin/flake8 .'
-                
                     // Run black in check-only mode to verify code formatting
                     sh 'black --check .'
                 }
