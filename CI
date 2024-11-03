@@ -1,56 +1,33 @@
 pipeline {
-    agent any
-
-    stages {
-        stage('Setup Virtual Environment') {  // New stage for virtual environment setup
+    agent any  // This defines where the pipeline will run; "any" lets Jenkins decide.
+    stages {  // Stages are the main steps in the CI pipeline.
+        stage('Install Dependencies') {  // First stage: Install Python packages
             steps {
-                // Move to the /opt/status-page directory and create a virtual environment
-                dir('opt/status-page') {
-                    sh '''
-                    python3 -m venv venv  // Create a virtual environment in the opt/status-page directory
-                    source venv/bin/activate  // Activate the virtual environment
-                    '''
-                }
+                // Install necessary Python packages
+                sh 'pip3 install -r requirements.txt'
+                sh 'pip3 install flake8 black'
             }
         }
-
-        stage('Install Dependencies') {
+        stage('Lint Code') {  // Second stage: Linting
             steps {
-                dir('opt/status-page') {
-                    sh '''
-                    source venv/bin/activate
-                    pip install -r requirements.txt
-                    pip install flake8 black
-                    '''
-                }
+                // Run flake8 to check for code style issues
+                sh 'flake8 .'
+                
+                // Run black in check-only mode to verify code formatting
+                sh 'black --check .'
             }
         }
-
-        stage('Lint Code') {
+        stage('Run Tests') {  // Third stage: Testing
             steps {
-                dir('opt/status-page') {
-                    sh '''
-                    source venv/bin/activate
-                    flake8 .
-                    black --check .
-                    '''
-                }
-            }
-        }
-
-        stage('Run Tests') {
-            steps {
-                dir('opt/status-page') {
-                    sh '''
-                    source venv/bin/activate
-                    python manage.py test
-                    '''
-                }
+                // Run Django tests
+                sh 'python manage.py test'
             }
         }
     }
-
     post {
+        always {
+            echo 'Pipeline completed.'
+        }
         success {
             echo 'All stages passed successfully!'
         }
