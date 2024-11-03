@@ -37,7 +37,7 @@ pipeline {
                         def context = entry.name
                         githubNotify context: context, 
                                      description: "Starting ${context}", 
-                                     credentialsId: 'aws credentials',
+                                     credentialsId: 'git-password', // Updated to the correct credentials ID
                                      repo: 'noalotan/FinalProject-NoaItay', 
                                      account: 'noalotan', 
                                      sha: env.GIT_COMMIT
@@ -46,14 +46,14 @@ pipeline {
                             build job: entry.job
                             githubNotify context: context, 
                                          description: "${context} succeeded", 
-                                         credentialsId: 'aws credentials',
+                                         credentialsId: 'git-password', // Updated to the correct credentials ID
                                          repo: 'noalotan/FinalProject-NoaItay', 
                                          account: 'noalotan', 
                                          sha: env.GIT_COMMIT
                         } catch (Exception e) {
                             githubNotify context: context, 
                                          description: "${context} failed", 
-                                         credentialsId: 'aws credentials',
+                                         credentialsId: 'git-password', // Updated to the correct credentials ID
                                          repo: 'noalotan/FinalProject-NoaItay', 
                                          account: 'noalotan', 
                                          sha: env.GIT_COMMIT
