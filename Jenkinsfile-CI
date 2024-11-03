@@ -4,12 +4,12 @@ pipeline {
         stage('Architecture Apply') {
             steps {
                 script {
-                    status 'Architecture Apply', 'PENDING'
+                    status(context: 'Architecture Apply', state: 'PENDING')
                     try {
                         build job: 'Dev-Architecture-apply'
-                        status 'Architecture Apply', 'SUCCESS'
+                        status(context: 'Architecture Apply', state: 'SUCCESS')
                     } catch (Exception e) {
-                        status 'Architecture Apply', 'FAILURE'
+                        status(context: 'Architecture Apply', state: 'FAILURE')
                         throw e
                     }
                 }
@@ -18,12 +18,12 @@ pipeline {
         stage('Image Build') {
             steps {
                 script {
-                    status 'Image Build', 'PENDING'
+                    status(context: 'Image Build', state: 'PENDING')
                     try {
                         build job: 'Dev-Update-status-page-image'
-                        status 'Image Build', 'SUCCESS'
+                        status(context: 'Image Build', state: 'SUCCESS')
                     } catch (Exception e) {
-                        status 'Image Build', 'FAILURE'
+                        status(context: 'Image Build', state: 'FAILURE')
                         throw e
                     }
                 }
@@ -32,12 +32,12 @@ pipeline {
         stage('Image Test') {
             steps {
                 script {
-                    status 'Image Test', 'PENDING'
+                    status(context: 'Image Test', state: 'PENDING')
                     try {
                         build job: 'Dev-app-syntax-test'
-                        status 'Image Test', 'SUCCESS'
+                        status(context: 'Image Test', state: 'SUCCESS')
                     } catch (Exception e) {
-                        status 'Image Test', 'FAILURE'
+                        status(context: 'Image Test', state: 'FAILURE')
                         throw e
                     }
                 }
@@ -46,12 +46,12 @@ pipeline {
         stage('Deploy YMLs') {
             steps {
                 script {
-                    status 'Deploy YMLs', 'PENDING'
+                    status(context: 'Deploy YMLs', state: 'PENDING')
                     try {
                         build job: 'Dev-Application-deploy'
-                        status 'Deploy YMLs', 'SUCCESS'
+                        status(context: 'Deploy YMLs', state: 'SUCCESS')
                     } catch (Exception e) {
-                        status 'Deploy YMLs', 'FAILURE'
+                        status(context: 'Deploy YMLs', state: 'FAILURE')
                         throw e
                     }
                 }
@@ -60,12 +60,12 @@ pipeline {
         stage('ALB Apply') {
             steps {
                 script {
-                    status 'ALB Apply', 'PENDING'
+                    status(context: 'ALB Apply', state: 'PENDING')
                     try {
                         build job: 'Dev-Alb-deploy'
-                        status 'ALB Apply', 'SUCCESS'
+                        status(context: 'ALB Apply', state: 'SUCCESS')
                     } catch (Exception e) {
-                        status 'ALB Apply', 'FAILURE'
+                        status(context: 'ALB Apply', state: 'FAILURE')
                         throw e
                     }
                 }
@@ -74,12 +74,12 @@ pipeline {
         stage('Tests') {
             steps {
                 script {
-                    status 'Tests', 'PENDING'
+                    status(context: 'Tests', state: 'PENDING')
                     try {
                         build job: 'Dev-CI-Tests'
-                        status 'Tests', 'SUCCESS'
+                        status(context: 'Tests', state: 'SUCCESS')
                     } catch (Exception e) {
-                        status 'Tests', 'FAILURE'
+                        status(context: 'Tests', state: 'FAILURE')
                         throw e
                     }
                 }
