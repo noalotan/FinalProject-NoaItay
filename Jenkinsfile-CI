@@ -94,5 +94,33 @@ pipeline {
                 }
             }
         }
+        stage('ALB Destroy') {
+            steps {
+                script {
+                    githubNotify context: 'ALB Destroy', status: 'PENDING'
+                    try {
+                        build job: 'Dev-Alb-destroy'
+                        githubNotify context: 'ALB Destroy', status: 'SUCCESS'
+                    } catch (Exception e) {
+                        githubNotify context: 'ALB Destroy', status: 'FAILURE'
+                        throw e
+                    }
+                }
+            }
+        }
+        stage('Architecture Destroy') {
+            steps {
+                script {
+                    githubNotify context: 'Architecture Destroy', status: 'PENDING'
+                    try {
+                        build job: 'Dev-Architecture-destroy'
+                        githubNotify context: 'Architecture Destroy', status: 'SUCCESS'
+                    } catch (Exception e) {
+                        githubNotify context: 'Architecture Destroy', status: 'FAILURE'
+                        throw e
+                    }
+                }
+            }
+        }
     }
 }
