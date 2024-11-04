@@ -8,6 +8,7 @@ pipeline {
                     def branch = env.GIT_BRANCH ?: 'origin/Prod'
                     if (branch != 'origin/Prod') {
                         echo "Skipping build as the branch is not Prod"
+                        echo env.GIT_BRANCH
                         currentBuild.result = 'SUCCESS'
                         return
                     }
