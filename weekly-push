@@ -6,7 +6,7 @@ pipeline {
                 script {
                     // Configure Git user
                     sh 'git config user.email "itayshlanger16@gmail.com"'
-                    sh 'git config user.name "Itay Shlanger"'
+                    sh 'git config user.name "itayshlanger"'
 
                     // Checkout the Prod branch
                     sh 'git checkout Prod'
