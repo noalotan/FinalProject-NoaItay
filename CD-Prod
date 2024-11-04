@@ -1,6 +1,20 @@
 pipeline {
     agent any
     stages {
+        stage('Checkout') {
+            steps {
+                // Check out the Prod branch
+                script {
+                    def branch = env.GIT_BRANCH ?: 'origin/Prod'
+                    if (branch != 'origin/Prod') {
+                        echo "Skipping build as the branch is not Prod"
+                        currentBuild.result = 'SUCCESS'
+                        return
+                    }
+                }
+                checkout scm
+            }
+        }
         stage('Image Build') { // This stage is now after Image Test
             steps {
                 script {
