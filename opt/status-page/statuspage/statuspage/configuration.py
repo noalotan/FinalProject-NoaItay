@@ -14,7 +14,7 @@ DATABASE = {
     'NAME': 'statuspage',         # Database name
     'USER': 'statuspage',               # PostgreSQL username
     'PASSWORD': 'itayandnoa',           # PostgreSQL password
-    'HOST': 'itayandnoa-dev.cx248m4we6k7.us-east-1.rds.amazonaws.com',      # Database server
+    'HOST': 'itayandnoa-prod.cx248m4we6k7.us-east-1.rds.amazonaws.com',      # Database server
     'PORT': '5432',               # Database port (leave blank for default)
     'CONN_MAX_AGE': 300,      # Max database connection age
 }
@@ -23,7 +23,7 @@ DATABASE = {
 # for each. Full connection details are required.
 REDIS = {
     'tasks': {
-        'HOST': 'noa-itay-redis-cache-dev.7fftml.ng.0001.use1.cache.amazonaws.com',
+        'HOST': 'noa-itay-redis-cache-prod.7fftml.ng.0001.use1.cache.amazonaws.com',
         'PORT': 6379,
         # Comment out `HOST` and `PORT` lines and uncomment the following if using Redis Sentinel
         # 'SENTINELS': [('mysentinel.redis.example.com', 6379)],
@@ -36,7 +36,7 @@ REDIS = {
         # 'INSECURE_SKIP_TLS_VERIFY': False,
     },
     'caching': {
-        'HOST': 'noa-itay-redis-cache-dev.7fftml.ng.0001.use1.cache.amazonaws.com',
+        'HOST': 'noa-itay-redis-cache-prod.7fftml.ng.0001.use1.cache.amazonaws.com',
         'PORT': 6379,
         # Comment out `HOST` and `PORT` lines and uncomment the following if using Redis Sentinel
         # 'SENTINELS': [('mysentinel.redis.example.com', 6379)],
