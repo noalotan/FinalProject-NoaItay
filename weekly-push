@@ -1,0 +1,34 @@
+pipeline {
+    agent any
+    stages {
+        stage('Checkout Dev') {
+            steps {
+                script {
+                    // Configure Git user
+                    sh 'git config user.email "itayshlanger16@gmail.com"'
+                    sh 'git config user.name "Itay Shlanger"'
+
+                    // Checkout the Prod branch
+                    sh 'git checkout Prod'
+
+                    // Pull the latest changes from the remote Prod branch
+                    sh 'git pull origin Prod'
+
+                    // Checkout changes from Dev
+                    sh 'git checkout Dev -- .'
+                    sh 'git add .'
+                    sh 'git commit -m "Update Prod with changes from Dev"'
+                }
+            }
+        }
+        // Add the next stage to push changes to the Prod branch if the commit was successful
+        stage('Push to Target Branch') {
+            steps {
+                script {
+                    // Push changes to the remote Prod branch
+                    sh 'git push origin Prod'
+                }
+            }
+        }
+    }
+}
