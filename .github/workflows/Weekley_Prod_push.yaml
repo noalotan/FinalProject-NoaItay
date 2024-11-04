@@ -1,0 +1,34 @@
+name: Weekly Push to Prod
+
+on:
+  schedule:
+    # Runs every week on Monday at 00:00 UTC
+    - cron: '0 0 * * 1'
+
+jobs:
+  push-to-prod:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Dev branch
+        uses: actions/checkout@v3
+        with:
+          ref: Dev  # Check out the Dev branch
+
+      - name: Configure Git
+        run: |
+          git config user.name "itayshlanger"
+          git config user.email "itayshlanger16@gmail.com"
+
+      - name: Fetch all branches
+        run: git fetch --all
+
+      - name: Checkout Prod branch
+        run: git checkout Prod
+
+      - name: Merge Dev into Prod
+        run: |
+          git merge Dev  # Merge Dev into Prod
+          git push origin Prod  # Push the updated Prod branch
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
