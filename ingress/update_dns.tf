@@ -7,7 +7,7 @@ resource "aws_route53_zone" "my_zone" {
 }
 
 data "aws_lb" "my_load_balancer" {
-  name = "alb-ingress-noa-itay-Prod"
+  name = "alb-ingress-noa-itay-prod"
 }
 
 resource "aws_route53_record" "cname_statuspage" {
