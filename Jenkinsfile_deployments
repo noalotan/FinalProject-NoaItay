@@ -15,7 +15,7 @@ pipeline {
 
         stage('Set kubectl with the right cluster') {
             steps {
-                    sh 'aws eks update-kubeconfig --name cluster-noa-itay --region us-east-1'
+                sh 'aws eks update-kubeconfig --name cluster-noa-itay --region us-east-1'
             }
         }
 
@@ -33,7 +33,8 @@ pipeline {
                     sh 'kubectl apply -f nginx.yaml'
                 }
             }
-        } 
+        }
+
         stage('Install Prometheus Helm Chart') {
             steps {
                 script {
@@ -46,7 +47,35 @@ pipeline {
                 }
             }
         }
-}
+
+        stage('Wait for prometheus-grafana Service') {
+            steps {
+                script {
+                    def serviceExists = false
+                    // Retry up to 5 times, waiting 10 seconds between checks
+                    for (int i = 0; i < 5; i++) {
+                        serviceExists = sh(script: 'kubectl get service prometheus-grafana -n status-page', returnStatus: true) == 0
+                        if (serviceExists) {
+                            break
+                        }
+                        sleep(time: 10, unit: 'SECONDS')
+                    }
+
+                    if (!serviceExists) {
+                        error 'prometheus-grafana service not found after multiple attempts.'
+                    }
+                }
+            }
+        }
+
+        stage('Patch prometheus-grafana Service') {
+            steps {
+                script {
+                    sh 'kubectl patch service prometheus-grafana -n status-page -p "{\\"spec\\": {\\"type\\": \\"NodePort\\"}}"'
+                }
+            }
+        }
+    }
 
     post {
         success {
