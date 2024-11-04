@@ -4,8 +4,8 @@ pipeline {
         stage('Checkout') {
             steps {
                 script {
-                    // Check the branch name
-                    def branchName = env.BRANCH_NAME ?: 'unknown'
+                    // Detect branch from GIT_BRANCH or fallback to CI/CD-Prod if not detected
+                    def branchName = env.BRANCH_NAME ?: (env.GIT_BRANCH ? env.GIT_BRANCH.replaceFirst(/^origin\//, '') : 'unknown')
                     echo "Detected branch: ${branchName}"
 
                     // Only proceed if it's the Prod branch
