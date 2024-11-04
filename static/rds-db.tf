@@ -1,5 +1,5 @@
 resource "aws_security_group" "rds_sg" {
-  name        = "prod-rds-sg-${local.resource_name}"
+  name        = "rds-sg-${local.resource_name}"
   description = "Security group for RDS"
   vpc_id      = local.vpc_id
 
