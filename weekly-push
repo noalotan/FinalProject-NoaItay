@@ -29,5 +29,14 @@ pipeline {
                 }
             }
         }
+        stage('Cleanup') {
+            steps {
+                script {
+                    // Cleanup the workspace
+                    echo 'Cleaning up the workspace...'
+                    cleanWs()
+                }
+            }
+        }
     }
 }
