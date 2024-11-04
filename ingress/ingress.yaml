@@ -4,7 +4,7 @@ metadata:
   name: alb-ingress-rules
   namespace: status-page
   annotations:
-    alb.ingress.kubernetes.io/load-balancer-name: "alb-ingress-noa-itay-Prod"
+    alb.ingress.kubernetes.io/load-balancer-name: "alb-ingress-noa-itay-prod"
     alb.ingress.kubernetes.io/ip-address-type: ipv4
     alb.ingress.kubernetes.io/scheme: internet-facing
     alb.ingress.kubernetes.io/healthcheck-protocol: HTTP
