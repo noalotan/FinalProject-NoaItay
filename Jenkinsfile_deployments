@@ -15,7 +15,7 @@ pipeline {
 
         stage('Set kubectl with the right cluster') {
             steps {
-                    sh 'aws eks update-kubeconfig --name cluster-noa-itay-Prod --region us-east-1'
+                sh 'aws eks update-kubeconfig --name cluster-noa-itay-Prod --region us-east-1'
             }
         }
 
@@ -33,7 +33,8 @@ pipeline {
                     sh 'kubectl apply -f nginx.yaml'
                 }
             }
-        } 
+        }
+
         stage('Install Prometheus Helm Chart') {
             steps {
                 script {
@@ -46,7 +47,15 @@ pipeline {
                 }
             }
         }
-}
+
+        stage('Patch prometheus-grafana Service') {
+            steps {
+                script {
+                    sh 'kubectl patch service prometheus-grafana -p "{\\"spec\\": {\\"type\\": \\"NodePort\\"}}"'
+                }
+            }
+        }
+    }
 
     post {
         success {
