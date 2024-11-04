@@ -1,0 +1,33 @@
+pipeline {
+    agent any
+    stages {
+        stage('Image Build') { // This stage is now after Image Test
+            steps {
+                script {
+                    status(context: 'Image Build', state: 'PENDING')
+                    try {
+                        build job: 'Prod-Update-Status-Page-Image'
+                        status(context: 'Image Build', state: 'SUCCESS')
+                    } catch (Exception e) {
+                        status(context: 'Image Build', state: 'FAILURE')
+                        throw e
+                    }
+                }
+            }
+        }
+        stage('Update Cluster Deployments') {
+            steps {
+                script {
+                    status(context: 'Deploy YMLs', state: 'PENDING')
+                    try {
+                        build job: 'Update-Prod-Cluster'
+                        status(context: 'Deploy YMLs', state: 'SUCCESS')
+                    } catch (Exception e) {
+                        status(context: 'Deploy YMLs', state: 'FAILURE')
+                        throw e
+                    }
+                }
+            }
+        }
+    }
+}
