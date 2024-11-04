@@ -18,6 +18,11 @@ pipeline {
                 }
             }
         }
+         stage('Set kubectl with the right cluster') {
+            steps {
+                    sh 'aws eks update-kubeconfig --name cluster-noa-itay-Prod --region us-east-1'
+            }
+        }
         stage('Update Kubernetes Deployment') {
             steps {
                 script {
