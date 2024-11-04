@@ -3,10 +3,12 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                // Check out the Prod branch
                 script {
-                    def branchName = sh(script: 'git rev-parse --abbrev-ref HEAD', returnStdout: true).trim()
-                    echo "Current branch: ${branchName}"
+                    // Check the branch name
+                    def branchName = env.BRANCH_NAME ?: 'unknown'
+                    echo "Detected branch: ${branchName}"
+
+                    // Only proceed if it's the Prod branch
                     if (branchName != 'Prod') {
                         echo "Skipping build as the branch is not Prod"
                         currentBuild.result = 'SUCCESS'
@@ -16,7 +18,8 @@ pipeline {
                 checkout scm
             }
         }
-        stage('Image Build') { // This stage is now after Image Test
+        
+        stage('Image Build') {
             steps {
                 script {
                     status(context: 'Image Build', state: 'PENDING')
@@ -30,6 +33,7 @@ pipeline {
                 }
             }
         }
+        
         stage('Update Cluster Deployments') {
             steps {
                 script {
