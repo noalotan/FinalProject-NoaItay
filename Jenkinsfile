@@ -15,14 +15,18 @@ pipeline {
        stage('Build Docker Image') {
             steps {
                 dir('opt/status-page') {
-                    sh " docker build -t itayshlanger/status-page-prod:latest ."
+                    script {
+                        def tag = new Date().format("yyyy-MM-dd")
+                        sh "docker build -t itayshlanger/status-page-prod:${tag} ."
+                    }
                 }
             }
         }
         stage('Push Docker Image') {
             steps {
                 script {
-                    sh "docker push itayshlanger/status-page-prod:latest"
+                    def tag = new Date().format("yyyy-MM-dd")
+                    sh "docker push itayshlanger/status-page-prod:${tag}"
                 }
             }
         }
@@ -38,3 +42,4 @@ pipeline {
         }
     }
 }
+
