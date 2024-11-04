@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Variables
-INSTANCE_NAME="ng-main-noa-itay-Dev"
-LOAD_BALANCER_NAME="alb-ingress-noa-itay-dev"
+INSTANCE_NAME="ng-main-noa-itay-Prod"
+LOAD_BALANCER_NAME="alb-ingress-noa-itay-Prod"
 
 # Step 1: Get the Instance ID
 INSTANCE_ID=$(aws ec2 describe-instances \
