@@ -54,7 +54,7 @@ pipeline {
                     def serviceExists = false
                     // Retry up to 5 times, waiting 10 seconds between checks
                     for (int i = 0; i < 5; i++) {
-                        serviceExists = sh(script: 'kubectl get service prometheus-grafana --ignore-not-found', returnStatus: true) == 0
+                        serviceExists = sh(script: 'kubectl get service prometheus-grafana', returnStatus: true) == 0
                         if (serviceExists) {
                             break
                         }
