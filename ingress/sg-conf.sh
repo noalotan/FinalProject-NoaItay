@@ -2,7 +2,7 @@
 
 # Variables
 INSTANCE_NAME="ng-main-noa-itay-Prod"
-LOAD_BALANCER_NAME="alb-ingress-noa-itay-Prod"
+LOAD_BALANCER_NAME="alb-ingress-noa-itay-prod"
 
 # Step 1: Get the Instance ID with status running
 INSTANCE_ID=$(aws ec2 describe-instances \
