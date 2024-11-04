@@ -49,7 +49,7 @@ for LB_SG_ID in $LB_SG_IDS; do
     aws ec2 authorize-security-group-ingress \
         --group-id "$INSTANCE_SG_ID" \
         --protocol tcp \
-        --port 443 \
+        --port 80 \
         --source-group "$LB_SG_ID"
     echo "Added HTTP rule from $LB_SG_ID to $INSTANCE_SG_ID"
 done
