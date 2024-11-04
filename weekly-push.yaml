@@ -29,7 +29,7 @@ pipeline {
                     sh 'git commit -m "Update Prod with changes from Dev"'
 
                     // Push changes to the target branch using GitHub credentials
-                    withCredentials([usernamePassword(credentialsId: 'github-credentials', usernameVariable: 'GITHUB_USER', passwordVariable: 'GITHUB_TOKEN')]) {
+                    withCredentials([usernamePassword(credentialsId: 'git-password', usernameVariable: 'GITHUB_USER', passwordVariable: 'GITHUB_TOKEN')]) {
                         sh "git push https://${GITHUB_USER}:${GITHUB_TOKEN}@github.com/your-username/your-repo.git target-branch"
                     }
                 }
