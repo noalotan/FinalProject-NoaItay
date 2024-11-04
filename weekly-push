@@ -17,8 +17,6 @@ pipeline {
                     sh 'git config user.name "itay shlanger"'
                     // Checkout the target branch
                     sh 'git checkout Prod'
-                    // Pull the latest changes from the remote Prod branch
-                    sh 'git pull origin Prod'
                     // Copy content from source branch to target branch
                     sh 'git checkout Dev -- .'
                     // Add changes and commit
