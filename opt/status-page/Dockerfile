@@ -15,7 +15,6 @@ RUN apt-get update && \
     apt-get clean && \
     addgroup --system status-page && \
     adduser --system --group status-page
-
 # Expose the application port
 EXPOSE 8001
 
