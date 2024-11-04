@@ -1,32 +1,33 @@
 pipeline {
-    agent any
+    agent any 
     stages {
-        stage('Checkout Dev') {
+        stage('Checkout') {
             steps {
-                script {
-                    // Configure Git user
-                    sh 'git config user.email "itayshlanger16@gmail.com"'
-                    sh 'git config user.name "itayshlanger"'
-
-                    // Checkout the Prod branch
-                    sh 'git checkout Prod'
-
-                    // Pull the latest changes from the remote Prod branch
-                    sh 'git pull origin Prod'
-
-                    // Checkout changes from Dev
-                    sh 'git checkout Dev -- .'
-                    sh 'git add .'
-                    sh 'git commit -m "Update Prod with changes from Dev"'
-                }
+                // Checkout the source branch using GitHub credentials
+                git branch: 'Dev', 
+                    url: 'https://github.com/noalotan/FinalProject-NoaItay.git', 
+                    credentialsId: 'git-password'
             }
         }
-        // Add the next stage to push changes to the Prod branch if the commit was successful
         stage('Push to Target Branch') {
             steps {
                 script {
-                    // Push changes to the remote Prod branch
-                    sh 'git push origin Prod'
+                    // Set up Git user information
+                    sh 'git config user.email "itayshlanger16@gmail.com"'
+                    sh 'git config user.name "itay shlanger"'
+                    // Checkout the target branch
+                    sh 'git checkout Prod'
+                    // Pull the latest changes from the remote Prod branch
+                    sh 'git pull origin Prod'
+                    // Copy content from source branch to target branch
+                    sh 'git checkout Dev -- .'
+                    // Add changes and commit
+                    sh 'git add .'
+                    sh 'git commit -m "Update Prod with changes from Dev"'
+                    // Push changes to the target branch using GitHub credentials
+                      withCredentials([usernamePassword(credentialsId: 'git-password', usernameVariable: 'GITHUB_USER', passwordVariable: 'GITHUB_TOKEN')]) {
+                        sh 'git push https://${GITHUB_USER}:${GITHUB_TOKEN}@github.com/noalotan/FinalProject-NoaItay.git Prod'
+                    }
                 }
             }
         }
