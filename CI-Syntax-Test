@@ -1,7 +1,16 @@
 pipeline {
     agent any
+    environment {
+        SOURCE_BRANCH = "${ghprbSourceBranch}"
+    }
 
     stages {
+        stage('Checkout Source Branch') {
+            steps {
+                echo "Checking out source branch ${SOURCE_BRANCH} from the PR"
+                checkout scm: [$class: 'GitSCM', branches: [[name: "*/${SOURCE_BRANCH}"]]]
+            }
+        }
         stage('Preparation') {
             steps {
                 script {
