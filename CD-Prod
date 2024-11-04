@@ -1,0 +1,48 @@
+pipeline {
+    agent any
+
+    environment {
+        DOCKER_IMAGE = 'itayshlanger/status-page-prod'
+        K8S_DEPLOYMENT = 'django'
+        K8S_NAMESPACE = 'status-page'
+    }
+
+    stages {
+        stage('Setup AWS Credentials') {
+            steps {
+                withCredentials([aws(credentialsId: 'aws credentials')]) {
+                    script {
+                        env.AWS_ACCESS_KEY_ID = "${AWS_ACCESS_KEY_ID}"
+                        env.AWS_SECRET_ACCESS_KEY = "${AWS_SECRET_ACCESS_KEY}"
+                    }
+                }
+            }
+        }
+        stage('Update Kubernetes Deployment') {
+            steps {
+                script {
+                    // Step to update the deployment image
+                    sh "kubectl set image deployment/$K8S_DEPLOYMENT django=$DOCKER_IMAGE:latest -n $K8S_NAMESPACE"
+                }
+            }
+        }
+
+        stage('Verify Update') {
+            steps {
+                script {
+                    // Wait for the rollout to complete and check the status
+                    sh "kubectl rollout status deployment/$K8S_DEPLOYMENT -n $K8S_NAMESPACE"
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'Deployment completed successfully!'
+        }
+        failure {
+            echo 'Deployment failed!'
+        }
+    }
+}
