@@ -18,33 +18,41 @@ pipeline {
                 }
             }
         }
-         stage('Set kubectl with the right cluster') {
+        stage('Set kubectl with the right cluster') {
             steps {
-                    sh 'aws eks update-kubeconfig --name cluster-noa-itay-prod --region us-east-1'
+                // Verify connection to EKS cluster
+                sh 'aws eks update-kubeconfig --name cluster-noa-itay-prod --region us-east-1'
+                sh 'kubectl config current-context'  // Print current kubectl context for debugging
+                sh "kubectl get nodes -n $K8S_NAMESPACE"  // Check if nodes are accessible
             }
         }
         stage('Update Kubernetes Deployment') {
             steps {
                 script {
-                    // Step to update the deployment image
-                    sh "kubectl set image deployment/$K8S_DEPLOYMENT django=$DOCKER_IMAGE:latest -n $K8S_NAMESPACE"
-                       // Annotate to force the update if the image is already latest
+                    // Attempt to update the deployment image with the latest tag
+                    sh "kubectl set image deployment/$K8S_DEPLOYMENT django=$DOCKER_IMAGE:latest -n $K8S_NAMESPACE --record"
+                    
+                    // Force redeployment by updating the deployment annotation
                     sh "kubectl annotate deployment/$K8S_DEPLOYMENT kubernetes.io/change-cause='Force image update to latest' --overwrite -n $K8S_NAMESPACE"
+                    
+                    // Additional verification command: check if the image is updated in the deployment spec
+                    sh "kubectl get deployment $K8S_DEPLOYMENT -o=jsonpath='{.spec.template.spec.containers[0].image}' -n $K8S_NAMESPACE"
                 }
             }
         }
         stage('Verify Update') {
             steps {
                 script {
-                    // Wait for the rollout to complete and check the status
+                    // Wait for the rollout to complete and check status
                     sh "kubectl rollout status deployment/$K8S_DEPLOYMENT -n $K8S_NAMESPACE"
                     
-                    // Verify the updated image in the deployment
-                    sh "kubectl get deployment $K8S_DEPLOYMENT -o=jsonpath='{.spec.template.spec.containers[0].image}' -n $K8S_NAMESPACE"
+                    // List pods to confirm new ones are created
+                    sh "kubectl get pods -l app=$K8S_DEPLOYMENT -n $K8S_NAMESPACE -o wide"
                 }
             }
         }
     }
+
     post {
         success {
             echo 'Deployment completed successfully!'
