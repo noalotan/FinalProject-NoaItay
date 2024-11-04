@@ -1,0 +1,52 @@
+pipeline {
+    agent any
+    stages {
+        stage('Checkout') {
+            steps {
+                script {
+                    // Check the branch name
+                    def branchName = env.BRANCH_NAME ?: 'unknown'
+                    echo "Detected branch: ${branchName}"
+
+                    // Only proceed if it's the Prod branch
+                    if (branchName != 'Prod') {
+                        echo "Skipping build as the branch is not Prod"
+                        currentBuild.result = 'SUCCESS'
+                        return
+                    }
+                }
+                checkout scm
+            }
+        }
+        
+        stage('Image Build') {
+            steps {
+                script {
+                    status(context: 'Image Build', state: 'PENDING')
+                    try {
+                        build job: 'Prod-Update-Status-Page-Image'
+                        status(context: 'Image Build', state: 'SUCCESS')
+                    } catch (Exception e) {
+                        status(context: 'Image Build', state: 'FAILURE')
+                        throw e
+                    }
+                }
+            }
+        }
+        
+        stage('Update Cluster Deployments') {
+            steps {
+                script {
+                    status(context: 'Deploy YMLs', state: 'PENDING')
+                    try {
+                        build job: 'Update-Prod-Cluster'
+                        status(context: 'Update Cluster Deployments', state: 'SUCCESS')
+                    } catch (Exception e) {
+                        status(context: 'Update Cluster Deployments', state: 'FAILURE')
+                        throw e
+                    }
+                }
+            }
+        }
+    }
+}
