@@ -2,7 +2,7 @@ pipeline {
     agent any 
 
     environment {
-        CLUSTER_NAME = 'cluster-noa-itay-Prod'
+        CLUSTER_NAME = 'cluster-noa-itay-prod'
         REGION_NAME = 'us-east-1'
         POLICY_ARN = 'arn:aws:iam::992382545251:policy/AWSLoadBalancerControllerIAMPolicy'
     }
