@@ -21,9 +21,9 @@ pipeline {
                     status(context: 'Deploy YMLs', state: 'PENDING')
                     try {
                         build job: 'Update-Prod-Cluster'
-                        status(context: 'Deploy YMLs', state: 'SUCCESS')
+                        status(context: 'Update Cluster Deployments', state: 'SUCCESS')
                     } catch (Exception e) {
-                        status(context: 'Deploy YMLs', state: 'FAILURE')
+                        status(context: 'Update Cluster Deployments', state: 'FAILURE')
                         throw e
                     }
                 }
