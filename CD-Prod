@@ -5,10 +5,10 @@ pipeline {
             steps {
                 // Check out the Prod branch
                 script {
-                    def branch = env.GIT_BRANCH ?: 'origin/Prod'
-                    if (branch != 'origin/Prod') {
+                    def branchName = sh(script: 'git rev-parse --abbrev-ref HEAD', returnStdout: true).trim()
+                    echo "Current branch: ${branchName}"
+                    if (branchName != 'Prod') {
                         echo "Skipping build as the branch is not Prod"
-                        echo env.GIT_BRANCH
                         currentBuild.result = 'SUCCESS'
                         return
                     }
