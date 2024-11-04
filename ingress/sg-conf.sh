@@ -4,14 +4,15 @@
 INSTANCE_NAME="ng-main-noa-itay-Prod"
 LOAD_BALANCER_NAME="alb-ingress-noa-itay-Prod"
 
-# Step 1: Get the Instance ID
+# Step 1: Get the Instance ID with status running
 INSTANCE_ID=$(aws ec2 describe-instances \
     --filters "Name=tag:Name,Values=$INSTANCE_NAME" \
+              "Name=instance-state-name,Values=running" \
     --query "Reservations[0].Instances[0].InstanceId" \
     --output text)
 
 if [ "$INSTANCE_ID" == "None" ]; then
-    echo "Instance with name $INSTANCE_NAME not found."
+    echo "Running instance with name $INSTANCE_NAME not found."
     exit 1
 fi
 
