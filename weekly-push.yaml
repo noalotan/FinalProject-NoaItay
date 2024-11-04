@@ -5,7 +5,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 // Checkout the source branch using GitHub credentials
-                git branch: 'source-branch', 
+                git branch: 'Dev', 
                     url: 'https://github.com/noalotan/FinalProject-NoaItay.git', 
                     credentialsId: 'git-password'
             }
