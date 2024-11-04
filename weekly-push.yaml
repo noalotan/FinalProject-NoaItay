@@ -1,0 +1,46 @@
+pipeline {
+    agent any 
+
+    stages {
+        stage('Checkout') {
+            steps {
+                // Checkout the source branch using GitHub credentials
+                git branch: 'source-branch', 
+                    url: 'https://github.com/noalotan/FinalProject-NoaItay.git', 
+                    credentialsId: 'git-password'
+            }
+        }
+
+        stage('Build / Test') {
+            steps {
+                // Your build or test commands go here
+                echo 'Building / Testing...'
+            }
+        }
+
+        stage('Push to Target Branch') {
+            steps {
+                script {
+                    // Set up Git user information
+                    sh 'git config user.email "your-email@example.com"'
+                    sh 'git config user.name "Your Name"'
+
+                    // Checkout the target branch
+                    sh 'git checkout target-branch'
+
+                    // Copy content from source branch to target branch
+                    sh 'git checkout source-branch -- .'
+
+                    // Add changes and commit
+                    sh 'git add .'
+                    sh 'git commit -m "Update target branch with changes from source branch"'
+
+                    // Push changes to the target branch using GitHub credentials
+                    withCredentials([usernamePassword(credentialsId: 'github-credentials', usernameVariable: 'GITHUB_USER', passwordVariable: 'GITHUB_TOKEN')]) {
+                        sh "git push https://${GITHUB_USER}:${GITHUB_TOKEN}@github.com/your-username/your-repo.git target-branch"
+                    }
+                }
+            }
+        }
+    }
+}
