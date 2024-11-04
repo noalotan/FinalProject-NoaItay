@@ -25,8 +25,9 @@ pipeline {
                     sh 'git checkout Dev -- .'
 
                     // Push changes to the target branch using GitHub credentials
-                    withCredentials([usernamePassword(credentialsId: 'git-password', usernameVariable: 'GITHUB_USER', passwordVariable: 'GITHUB_TOKEN')]) {
-                        sh "git push https://${GITHUB_USER}:${GITHUB_TOKEN}@github.com/your-username/your-repo.git target-branch"
+                      withCredentials([usernamePassword(credentialsId: 'git-password', usernameVariable: 'GITHUB_USER', passwordVariable: 'GITHUB_TOKEN')]) {
+                        sh 'git push https://${GITHUB_USER}:${GITHUB_TOKEN}@github.com/noalotan/FinalProject-NoaItay.git target-branch'
+                    }
                     }
                 }
             }
