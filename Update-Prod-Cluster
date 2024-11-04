@@ -28,6 +28,7 @@ pipeline {
                 script {
                     // Step to update the deployment image
                     sh "kubectl set image deployment/$K8S_DEPLOYMENT django=$DOCKER_IMAGE:latest -n $K8S_NAMESPACE"
+                    sh "kubectl get deployment $K8S_DEPLOYMENT -o=jsonpath='{.spec.template.spec.containers[0].image}' -n $K8S_NAMESPACE"
                 }
             }
         }
