@@ -15,14 +15,14 @@ pipeline {
        stage('Build Docker Image') {
             steps {
                 dir('opt/status-page') {
-                    sh " docker build -t itayshlanger/status-page-dev:latest ."
+                    sh " docker build -t itayshlanger/status-page-prod:latest ."
                 }
             }
         }
         stage('Push Docker Image') {
             steps {
                 script {
-                    sh "docker push itayshlanger/status-page-dev:latest"
+                    sh "docker push itayshlanger/status-page-prod:latest"
                 }
             }
         }
