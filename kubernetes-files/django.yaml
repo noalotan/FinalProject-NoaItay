@@ -25,7 +25,8 @@ spec:
     spec:
       containers:
       - name: django
-        image: itayshlanger/status-page-prod:latest  
+        image: itayshlanger/status-page-prod:latest
+        imagePullPolicy: Always
         ports:
          - containerPort: 8001
         readinessProbe:
