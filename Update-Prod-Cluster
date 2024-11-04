@@ -31,7 +31,7 @@ pipeline {
                     sh "kubectl set image deployment/$K8S_DEPLOYMENT django=$DOCKER_IMAGE:latest -n $K8S_NAMESPACE --record"
                     
                     // Add a timestamp annotation to force the rolling update
-                    sh "kubectl annotate deployment/$K8S_DEPLOYMENT redeploy-timestamp=$(date +'%s') --overwrite -n $K8S_NAMESPACE"
+                    sh "kubectl annotate deployment/$K8S_DEPLOYMENT redeploy-timestamp=\$(date +\"%s\") --overwrite -n $K8S_NAMESPACE"
                 }
             }
         }
