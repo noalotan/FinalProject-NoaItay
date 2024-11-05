@@ -8,15 +8,47 @@ pipeline {
         PR_BRANCH = "${env.GITHUB_PR_SOURCE_BRANCH ?: 'none'}"
         PR_TARGET = "${env.GITHUB_PR_TARGET_BRANCH ?: 'none'}"
     }
-    
+
     stages {
-        
-        stage('Example') {
+
+        stage('Check PR Target') {
+            when {
+                expression { 
+                    // Check if the PR target branch is 'Dev'
+                    return env.PR_TARGET == 'Dev'
+                }
+            }
             steps {
-                echo "Branch: ${env.BRANCH_NAME}"
-                echo "PR ID: ${env.PR_ID}"
-                echo "PR Branch: ${env.PR_BRANCH}"
-                echo "PR Target: ${env.PR_TARGET}"
+                echo "PR Target is 'Dev'. Proceeding with the pipeline to trigger CI-main."
+            }
+        }
+
+        stage('Trigger CI-main Build') {
+            when {
+                expression { 
+                    // Only trigger CI-main build if the PR target is 'Dev'
+                    return env.PR_TARGET == 'Dev'
+                }
+            }
+            steps {
+                script {
+                    echo "Triggering the CI-main job because PR target is 'Dev'"
+                    
+                    // Trigger the existing CI-main job in Jenkins
+                    build job: 'CI-main', wait: true
+                }
+            }
+        }
+
+        stage('Pipeline Skipped') {
+            when {
+                expression {
+                    // If PR_TARGET is NOT 'Dev', skip this pipeline
+                    return env.PR_TARGET != 'Dev'
+                }
+            }
+            steps {
+                echo "PR target is not 'Dev'. Skipping the pipeline."
             }
         }
     }
