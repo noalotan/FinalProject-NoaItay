@@ -1,27 +1,20 @@
 pipeline {
     agent any
+    
     environment {
-        BRANCH_NAME = env.BRANCH_NAME ?: 'unknown'
-        PR_ID = env.CHANGE_ID ?: 'none'
-        PR_BRANCH = env.CHANGE_BRANCH ?: 'none'
-        PR_TARGET = env.CHANGE_TARGET ?: 'none'
+        BRANCH_NAME = "${env.BRANCH_NAME ?: 'unknown'}"
+        PR_ID = "${env.CHANGE_ID ?: 'none'}"
+        PR_BRANCH = "${env.CHANGE_BRANCH ?: 'none'}"
+        PR_TARGET = "${env.CHANGE_TARGET ?: 'none'}"
     }
+    
     stages {
-        stage('Build') {
+        stage('Example') {
             steps {
-                script {
-                    if (env.PR_ID != 'none') {
-                        echo "Building PR ${env.PR_ID} from ${env.PR_BRANCH} to ${env.PR_TARGET}"
-                    } else {
-                        echo "Building branch ${env.BRANCH_NAME}"
-                    }
-                }
-            }
-        }
-        stage('Test') {
-            steps {
-                echo "Running tests..."
-                // Add your test steps here
+                echo "Branch: ${env.BRANCH_NAME}"
+                echo "PR ID: ${env.PR_ID}"
+                echo "PR Branch: ${env.PR_BRANCH}"
+                echo "PR Target: ${env.PR_TARGET}"
             }
         }
     }
