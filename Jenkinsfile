@@ -17,7 +17,7 @@ pipeline {
                 dir('opt/status-page') {
                     script {
                         def tag = new Date().format("yyyy-MM-dd")
-                        sh "docker build -t itayshlanger/status-page-prod:${tag} ."
+                        sh "docker build -t itayshlanger/status-page-prod:latest ."
                     }
                 }
             }
@@ -26,7 +26,7 @@ pipeline {
             steps {
                 script {
                     def tag = new Date().format("yyyy-MM-dd")
-                    sh "docker push itayshlanger/status-page-prod:${tag}"
+                    sh "docker push itayshlanger/status-page-prod:latest"
                 }
             }
         }
