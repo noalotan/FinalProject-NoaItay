@@ -2,17 +2,18 @@ pipeline {
     agent any
     
     environment {
+        // Use GitHub PR-specific variables instead of CHANGE_*
         BRANCH_NAME = "${env.BRANCH_NAME ?: 'unknown'}"
-        PR_ID = "${env.CHANGE_ID ?: 'none'}"
-        PR_BRANCH = "${env.CHANGE_BRANCH ?: 'none'}"
-        PR_TARGET = "${env.CHANGE_TARGET ?: 'none'}"
+        PR_ID = "${env.GITHUB_PR_NUMBER ?: 'none'}"
+        PR_BRANCH = "${env.GITHUB_PR_SOURCE_BRANCH ?: 'none'}"
+        PR_TARGET = "${env.GITHUB_PR_TARGET_BRANCH ?: 'none'}"
     }
     
     stages {
         stage('Debug Environment') {
             steps {
                 echo "Current Environment Variables:"
-                sh 'env'
+                sh 'env' // Print all environment variables for debugging
             }
         }
         
