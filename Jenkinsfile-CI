@@ -1,5 +1,10 @@
 pipeline {
     agent any
+
+    parameters {
+        string(name: 'prBranch', defaultValue: '', description: 'The source branch of the PR')
+    }
+
     stages {
         stage('Architecture Apply') {
             steps {
@@ -21,6 +26,9 @@ pipeline {
                     status(context: 'Image Test', state: 'PENDING')
                     try {
                         build job: 'Dev-app-syntax-test'
+                        parameters: [
+                              string(name: 'prBranch', value: env.PR_BRANCH)
+                          ]
                         status(context: 'Image Test', state: 'SUCCESS')
                     } catch (Exception e) {
                         status(context: 'Image Test', state: 'FAILURE')
@@ -35,6 +43,9 @@ pipeline {
                     status(context: 'Image Build', state: 'PENDING')
                     try {
                         build job: 'Dev-Update-status-page-image'
+                        parameters: [
+                              string(name: 'prBranch', value: env.PR_BRANCH)
+                          ]
                         status(context: 'Image Build', state: 'SUCCESS')
                     } catch (Exception e) {
                         status(context: 'Image Build', state: 'FAILURE')
