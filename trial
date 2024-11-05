@@ -5,12 +5,6 @@ pipeline {
         SOURCE_BRANCH = "${env.CHANGE_BRANCH}"
         TARGET_BRANCH = "${env.CHANGE_TARGET}"
     }
-    triggers {
-        // This ensures the pipeline is triggered for PR events (opened, synchronize, etc.)
-        githubPullRequest {
-            events('opened', 'reopened', 'synchronize')  // Listen for PR creation, update, and reopening
-        }
-    }
     stages {
         stage('Check Branches') {
             steps {
