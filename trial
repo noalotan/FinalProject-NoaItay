@@ -1,11 +1,17 @@
 pipeline {
     agent any
+    environment {
+        BRANCH_NAME = env.BRANCH_NAME ?: 'unknown'
+        PR_ID = env.CHANGE_ID ?: 'none'
+        PR_BRANCH = env.CHANGE_BRANCH ?: 'none'
+        PR_TARGET = env.CHANGE_TARGET ?: 'none'
+    }
     stages {
         stage('Build') {
             steps {
                 script {
-                    if (env.CHANGE_ID) {
-                        echo "Building PR ${env.CHANGE_ID} from ${env.CHANGE_BRANCH} to ${env.CHANGE_TARGET}"
+                    if (env.PR_ID != 'none') {
+                        echo "Building PR ${env.PR_ID} from ${env.PR_BRANCH} to ${env.PR_TARGET}"
                     } else {
                         echo "Building branch ${env.BRANCH_NAME}"
                     }
