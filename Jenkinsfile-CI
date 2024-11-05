@@ -6,20 +6,6 @@ pipeline {
     }
 
     stages {
-        stage('Architecture Apply') {
-            steps {
-                script {
-                    status(context: 'Architecture Apply', state: 'PENDING')
-                    try {
-                        build job: 'Dev-Architecture-apply'
-                        status(context: 'Architecture Apply', state: 'SUCCESS')
-                    } catch (Exception e) {
-                        status(context: 'Architecture Apply', state: 'FAILURE')
-                        throw e
-                    }
-                }
-            }
-        }
         stage('Image Test') { // Moved this stage before Image Build
             steps {
                 script {
@@ -49,6 +35,20 @@ pipeline {
                         status(context: 'Image Build', state: 'SUCCESS')
                     } catch (Exception e) {
                         status(context: 'Image Build', state: 'FAILURE')
+                        throw e
+                    }
+                }
+            }
+        }
+        stage('Architecture Apply') {
+            steps {
+                script {
+                    status(context: 'Architecture Apply', state: 'PENDING')
+                    try {
+                        build job: 'Dev-Architecture-apply'
+                        status(context: 'Architecture Apply', state: 'SUCCESS')
+                    } catch (Exception e) {
+                        status(context: 'Architecture Apply', state: 'FAILURE')
                         throw e
                     }
                 }
