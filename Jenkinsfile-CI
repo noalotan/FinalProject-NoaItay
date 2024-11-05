@@ -85,16 +85,20 @@ pipeline {
                 }
             }
         }
+
+        // Destroy parts
         stage('ALB Destroy') {
             steps {
                 script {
                     status(context: 'ALB Destroy', state: 'PENDING')
-                    try {
-                        build job: 'Dev-Alb-destroy'
-                        status(context: 'ALB Destroy', state: 'SUCCESS')
-                    } catch (Exception e) {
-                        status(context: 'ALB Destroy', state: 'FAILURE')
-                        throw e
+                    catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+                        try {
+                            build job: 'Dev-Alb-destroy'
+                            status(context: 'ALB Destroy', state: 'SUCCESS')
+                        } catch (Exception e) {
+                            status(context: 'ALB Destroy', state: 'FAILURE')
+                            throw e
+                        }
                     }
                 }
             }
@@ -103,15 +107,29 @@ pipeline {
             steps {
                 script {
                     status(context: 'Architecture Destroy', state: 'PENDING')
-                    try {
-                        build job: 'Dev-Architecture-destroy'
-                        status(context: 'Architecture Destroy', state: 'SUCCESS')
-                    } catch (Exception e) {
-                        status(context: 'Architecture Destroy', state: 'FAILURE')
-                        throw e
+                    catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+                        try {
+                            build job: 'Dev-Architecture-destroy'
+                            status(context: 'Architecture Destroy', state: 'SUCCESS')
+                        } catch (Exception e) {
+                            status(context: 'Architecture Destroy', state: 'FAILURE')
+                            throw e
+                        }
                     }
                 }
             }
+        }
+    }
+
+    post {
+        always {
+            echo 'Pipeline finished!'
+        }
+        success {
+            echo 'Build succeeded!'
+        }
+        failure {
+            echo 'Build failed.'
         }
     }
 }
