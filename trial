@@ -9,6 +9,13 @@ pipeline {
     }
     
     stages {
+        stage('Debug Environment') {
+            steps {
+                echo "Current Environment Variables:"
+                sh 'env'
+            }
+        }
+        
         stage('Example') {
             steps {
                 echo "Branch: ${env.BRANCH_NAME}"
