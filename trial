@@ -8,11 +8,7 @@ pipeline {
         stage('Check Branches') {
             steps {
                 script {
-                    if (env.TARGET_BRANCH == 'Dev' && env.SOURCE_BRANCH == 'new_features') {
                         echo "PR is from ${SOURCE_BRANCH} to ${TARGET_BRANCH}. Triggering jobs..."
-                    } else {
-                        echo "PR is not to the Dev branch or not from new_features. Skipping jobs."
-                        currentBuild.result = 'NOT_BUILT'
                         return
                     }
                 }
