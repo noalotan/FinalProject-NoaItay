@@ -35,7 +35,7 @@ pipeline {
                     echo "Triggering the CI-main job because PR target is 'Dev'"
                     
                     // Trigger the existing CI-main job in Jenkins
-                    build job: 'CI-main', wait: true
+                    build job: 'CI - main', wait: true
                 }
             }
         }
