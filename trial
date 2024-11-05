@@ -34,8 +34,12 @@ pipeline {
                 script {
                     echo "Triggering the CI-main job because PR target is 'Dev'"
                     
-                    // Trigger the existing CI-main job in Jenkins
-                    build job: 'CI - main', wait: true
+                    // Trigger the existing CI-main job in Jenkins and pass PR_BRANCH as a parameter
+                    build job: 'CI - main', 
+                          wait: true, 
+                          parameters: [
+                              string(name: 'prBranch', value: env.PR_BRANCH)
+                          ]
                 }
             }
         }
