@@ -10,12 +10,6 @@ pipeline {
     }
     
     stages {
-        stage('Debug Environment') {
-            steps {
-                echo "Current Environment Variables:"
-                sh 'env' // Print all environment variables for debugging
-            }
-        }
         
         stage('Example') {
             steps {
