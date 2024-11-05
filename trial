@@ -1,18 +1,24 @@
 pipeline {
     agent any
     environment {
+        // Capturing the source and target branch of the pull request
         SOURCE_BRANCH = "${env.CHANGE_BRANCH}"
         TARGET_BRANCH = "${env.CHANGE_TARGET}"
+    }
+    triggers {
+        // This ensures the pipeline is triggered for PR events (opened, synchronize, etc.)
+        githubPullRequest {
+            events('opened', 'reopened', 'synchronize')  // Listen for PR creation, update, and reopening
+        }
     }
     stages {
         stage('Check Branches') {
             steps {
                 script {
-                        echo "PR is from ${SOURCE_BRANCH} to ${TARGET_BRANCH}. Triggering jobs..."
-                        return
-                    }
+                    // Display the source and target branches of the PR
+                    echo "Pull Request is from ${SOURCE_BRANCH} to ${TARGET_BRANCH}. Triggering job..."
                 }
             }
         }
     }
-
+}
