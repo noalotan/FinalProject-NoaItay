@@ -1,17 +1,21 @@
 pipeline {
     agent any
-    environment {
-        // Capturing the source and target branch of the pull request
-        SOURCE_BRANCH = "${env.CHANGE_BRANCH}"
-        TARGET_BRANCH = "${env.CHANGE_TARGET}"
-    }
     stages {
-        stage('Check Branches') {
+        stage('Build') {
             steps {
                 script {
-                    // Display the source and target branches of the PR
-                    echo "Pull Request is from ${SOURCE_BRANCH} to ${TARGET_BRANCH}. Triggering job..."
+                    if (env.CHANGE_ID) {
+                        echo "Building PR ${env.CHANGE_ID} from ${env.CHANGE_BRANCH} to ${env.CHANGE_TARGET}"
+                    } else {
+                        echo "Building branch ${env.BRANCH_NAME}"
+                    }
                 }
+            }
+        }
+        stage('Test') {
+            steps {
+                echo "Running tests..."
+                // Add your test steps here
             }
         }
     }
