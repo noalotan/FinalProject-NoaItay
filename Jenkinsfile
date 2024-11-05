@@ -4,18 +4,19 @@ pipeline {
         string(name: 'prBranch', defaultValue: '', description: 'The source branch of the PR')
     }
     stages {
-
         stage('Checkout PR Branch') {
             steps {
                 echo "Checking out PR branch: ${params.prBranch}"
                 checkout scm: [
                     $class: 'GitSCM',
                     branches: [[name: "origin/${params.prBranch}"]],
-                    userRemoteConfigs: [[url: 'https://github.com/noalotan/FinalProject-NoaItay.git']]
+                    userRemoteConfigs: [[
+                        url: 'https://github.com/noalotan/FinalProject-NoaItay.git',
+                        credentialsId: 'git-password' 
+                    ]]
                 ]
             }
         }
-        
         stage('Login to Docker') {
             steps {
                 script {
