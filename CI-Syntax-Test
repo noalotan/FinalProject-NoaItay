@@ -14,7 +14,10 @@ pipeline {
                 checkout scm: [
                     $class: 'GitSCM',
                     branches: [[name: "origin/${params.prBranch}"]],
-                    userRemoteConfigs: [[url: 'https://github.com/noalotan/FinalProject-NoaItay.git']]
+                    userRemoteConfigs: [[
+                        url: 'https://github.com/noalotan/FinalProject-NoaItay.git',
+                        credentialsId: 'your-credentials-id' // Replace with your actual credentials ID
+                    ]]
                 ]
             }
         }
