@@ -1,14 +1,21 @@
 pipeline {
     agent any
+    parameters {
+        string(name: 'prBranch', defaultValue: '', description: 'The source branch of the PR')
+    }
     environment {
         SOURCE_BRANCH = "${ghprbSourceBranch}"
     }
 
     stages {
-        stage('Checkout Source Branch') {
+        stage('Checkout PR Branch') {
             steps {
-                echo "Checking out source branch ${SOURCE_BRANCH} from the PR"
-                checkout scm: [$class: 'GitSCM', branches: [[name: "*/${SOURCE_BRANCH}"]]]
+                echo "Checking out PR branch: ${params.prBranch}"
+                checkout scm: [
+                    $class: 'GitSCM',
+                    branches: [[name: "origin/${params.prBranch}"]],
+                    userRemoteConfigs: [[url: 'https://github.com/noalotan/FinalProject-NoaItay.git']]
+                ]
             }
         }
         stage('Preparation') {
