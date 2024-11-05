@@ -4,7 +4,7 @@ pipeline {
     environment {
         CLUSTER_NAME = 'cluster-noa-itay-Dev'
         REGION_NAME = 'us-east-1'
-        POLICY_ARN = 'arn:aws:iam::992382545251:policy/AWSLoadBalancerControllerIAMPolicy'
+        POLICY_ARN = 'arn:aws:iam::992382545251:policy/AWSloadbalancerpolicy-noa-itay'
     }
 
     stages {
